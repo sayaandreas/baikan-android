@@ -1,4 +1,4 @@
-package com.sayaandreas.baikanandroid.ui.profile
+package com.sayaandreas.baikanandroid.ui.home
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -10,11 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sayaandreas.baikanandroid.R
@@ -22,7 +20,7 @@ import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import com.sayaandreas.baikanandroid.ui.theme.topAppBarLarge
 
 @Composable
-fun ProfileScreen() {
+fun ProfileTab() {
     Column(
         Modifier
             .fillMaxSize()
@@ -305,7 +303,7 @@ fun Trophies() {
 fun ProfileScreenScreenPreview() {
     BaikanAndroidTheme {
         Surface {
-            ProfileScreen()
+            ProfileTab()
         }
     }
 }

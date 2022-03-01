@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.sayaandreas.baikanandroid.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 
@@ -53,7 +53,7 @@ fun ChooseBankScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(top = 24.dp)
                     .clickable {
-                        navController.navigate(BaikanScreen.PaymentDetailScreen.name)
+                        navController.navigate(BaikanScreen.PaymentDetail.route)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,

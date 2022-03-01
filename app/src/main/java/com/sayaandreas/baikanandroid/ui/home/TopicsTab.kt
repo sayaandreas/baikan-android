@@ -1,4 +1,4 @@
-package com.sayaandreas.baikanandroid.ui.counseling
+package com.sayaandreas.baikanandroid.ui.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -22,7 +22,7 @@ import com.sayaandreas.baikanandroid.R
 data class Topic(val title: String, val icon: Int)
 
 @Composable
-fun ChooseTopicScreen(navController: NavHostController) {
+fun TopicsTab(navController: NavHostController) {
     var (selectedTopic, setSelectedTopic) = rememberSaveable { mutableStateOf("") }
     val counselingTopics = listOf(
         Topic(title = "Pekerjaan", icon = R.drawable.briefcase),

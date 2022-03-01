@@ -1,24 +1,17 @@
 package com.sayaandreas.baikanandroid.ui.onboarding
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -33,20 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
-import com.sayaandreas.baikanandroid.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
-import com.sayaandreas.baikanandroid.ui.counseling.CounselorDetail
-import com.sayaandreas.baikanandroid.ui.counseling.PagerSampleItem
-import com.sayaandreas.baikanandroid.ui.counseling.TagText
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.yield
 
 data class Slide(val title: String, val img: Int)
 
@@ -121,7 +109,8 @@ fun Desc3() {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OnboardingScreen(navController: NavHostController) {
-    val pagerState = rememberPagerState()
+//    val pagerState = rememberPagerState()
+
 
     val slideList = listOf(
         Slide(
@@ -137,6 +126,22 @@ fun OnboardingScreen(navController: NavHostController) {
             R.drawable.onboarding_4
         ),
     )
+
+    val pagerState = rememberPagerState(
+        slideList.size,
+    )
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            yield()
+            delay(2500)
+            pagerState.animateScrollToPage(
+                page = (pagerState.currentPage + 1) % (pagerState.pageCount),
+                animationSpec = tween(600)
+            )
+        }
+    }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -153,7 +158,7 @@ fun OnboardingScreen(navController: NavHostController) {
                     itemSpacing = 16.dp,
                     modifier = Modifier
                         .fillMaxWidth(),
-                    verticalAlignment = Alignment.Top
+                    verticalAlignment = Alignment.Top,
                 ) { page ->
                     PagerSampleItem(
                         data = slideList[page],
@@ -189,7 +194,7 @@ fun OnboardingScreen(navController: NavHostController) {
                 ) {
                     Button(
                         onClick = {
-                            navController.navigate(BaikanScreen.RegisterScreen.name)
+                            navController.navigate(BaikanScreen.Register.route)
                         },
                         shape = CircleShape,
                         modifier = Modifier.fillMaxWidth()
@@ -199,7 +204,7 @@ fun OnboardingScreen(navController: NavHostController) {
 
                     Button(
                         onClick = {
-                            navController.navigate(BaikanScreen.Home.name)
+                            navController.navigate(BaikanScreen.Home.route)
                         },
                         shape = CircleShape,
                         modifier = Modifier.fillMaxWidth(),
@@ -207,12 +212,17 @@ fun OnboardingScreen(navController: NavHostController) {
                         Text(text = "Telusuri")
                     }
 
-                    Row(Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.Center) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
                         Text(text = "Sudah punya akun? ")
                         Text(
                             text = "Masuk", modifier = Modifier
                                 .clickable {
-                                    navController.navigate(BaikanScreen.LoginScreen.name)
+                                    navController.navigate(BaikanScreen.Login.route)
                                 }, color = MaterialTheme.colors.primary
                         )
                     }
@@ -229,11 +239,11 @@ internal fun PagerSampleItem(
     description: @Composable () -> Unit
 ) {
     val image: Painter = painterResource(id = data.img)
-    Column(modifier) {
+    Column(modifier.height(520.dp)) {
         Row(
             Modifier
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(

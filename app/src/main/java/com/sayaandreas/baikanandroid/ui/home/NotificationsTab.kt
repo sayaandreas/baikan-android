@@ -1,4 +1,4 @@
-package com.sayaandreas.baikanandroid.ui.notifications
+package com.sayaandreas.baikanandroid.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -24,7 +24,7 @@ data class Notification(
 )
 
 @Composable
-fun NotificationsScreen() {
+fun NotificationsTab() {
     val notificationList = listOf(
         Notification(
             date = Date(),
@@ -95,7 +95,7 @@ fun NotificationsScreen() {
 fun NotificationsScreenPreview() {
     BaikanAndroidTheme {
         Surface {
-            NotificationsScreen()
+            NotificationsTab()
         }
     }
 }

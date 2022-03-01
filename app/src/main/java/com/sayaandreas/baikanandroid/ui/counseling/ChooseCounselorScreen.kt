@@ -25,7 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.sayaandreas.baikanandroid.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
 
 data class CounselorDetail(val name: String, val specialist: List<String>, val avatar: Int)
@@ -96,7 +96,7 @@ fun ChooseCounselorScreen(navController: NavHostController) {
             ) {
                 Button(
                     onClick = {
-                        navController.navigate(BaikanScreen.CounselingAgreementScreen.name)
+                        navController.navigate(BaikanScreen.CounselingAgreement.route)
                     },
                     shape = CircleShape,
                     modifier = Modifier.fillMaxWidth()

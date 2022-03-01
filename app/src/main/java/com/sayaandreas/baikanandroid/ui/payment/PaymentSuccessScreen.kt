@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.sayaandreas.baikanandroid.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 
 @Composable
@@ -99,7 +99,7 @@ fun PaymentSuccessScreen(navController: NavHostController) {
             ) {
                 OutlinedButton(
                     onClick = {
-                        navController.navigate(BaikanScreen.CallCounselorScreen.name)
+                        navController.navigate(BaikanScreen.CallCounselor.route)
                     },
                     Modifier.fillMaxWidth(),
                 ) {
@@ -118,7 +118,7 @@ fun PaymentSuccessScreen(navController: NavHostController) {
                 }
 
                 OutlinedButton(
-                    onClick = { navController.navigate(BaikanScreen.Home.name) },
+                    onClick = { navController.navigate(BaikanScreen.Home.route) },
                     Modifier.fillMaxWidth()
                 ) {
                     Text(text = "Kembali ke Home", color = Color.Black)

@@ -7,7 +7,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.sayaandreas.baikanandroid.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
 
 @Composable
@@ -118,7 +117,7 @@ fun ChooseServiceScreen(navController: NavHostController) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.large,
-                    onClick = { navController.navigate(BaikanScreen.ChoosePackageScreen.name) }) {
+                    onClick = { navController.navigate(BaikanScreen.ChoosePackage.route) }) {
                     Text(text = "Lanjut Pilih Paket")
                 }
             }

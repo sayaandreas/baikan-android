@@ -1,32 +1,21 @@
 package com.sayaandreas.baikanandroid.ui.onboarding
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.sayaandreas.baikanandroid.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 
@@ -66,7 +55,13 @@ fun WelcomeScreen(navController: NavHostController) {
                 .padding(top = 48.dp, start = 24.dp, end = 24.dp)
         ) {
             Button(
-                onClick = { navController.navigate(BaikanScreen.Home.name) },
+                onClick = {
+                    navController.navigate(BaikanScreen.Home.route) {
+                        popUpTo(BaikanScreen.Onboarding.route) {
+                            inclusive = true
+                        }
+                    }
+                },
                 shape = CircleShape,
                 modifier = Modifier.fillMaxWidth()
             ) {

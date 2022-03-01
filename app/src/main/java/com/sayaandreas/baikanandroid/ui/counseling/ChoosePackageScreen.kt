@@ -1,7 +1,6 @@
 package com.sayaandreas.baikanandroid.ui.counseling
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.sayaandreas.baikanandroid.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
 
 @Composable
@@ -111,7 +110,7 @@ fun ChoosePackageScreen(navController: NavHostController) {
                     shape = MaterialTheme.shapes.large,
                     onClick = {
                         if (selectedCard != 0) {
-                            navController.navigate(BaikanScreen.ChooseCounselorScreen.name)
+                            navController.navigate(BaikanScreen.ChooseCounselor.route)
                         }
                     }) {
                     Text(text = "Selanjutnya")

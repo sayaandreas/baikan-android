@@ -12,7 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.sayaandreas.baikanandroid.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
 
 @Composable
@@ -81,7 +81,7 @@ fun TopicIntroScreen(navController: NavHostController) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.large,
-                    onClick = { navController.navigate(BaikanScreen.ChooseServiceScreen.name) }) {
+                    onClick = { navController.navigate(BaikanScreen.ChooseService.route) }) {
                     Text(text = "Selanjutnya")
                 }
             }

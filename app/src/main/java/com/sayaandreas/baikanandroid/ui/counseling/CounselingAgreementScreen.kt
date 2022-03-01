@@ -1,6 +1,5 @@
 package com.sayaandreas.baikanandroid.ui.counseling
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,17 +11,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.sayaandreas.baikanandroid.BaikanScreen
-import com.sayaandreas.baikanandroid.R
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 
 @Composable
 fun CounselingAgreementScreen(navController: NavHostController) {
@@ -113,7 +108,7 @@ fun CounselingAgreementScreen(navController: NavHostController) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.large,
-                    onClick = { navController.navigate(BaikanScreen.OrderDetailScreen.name) }) {
+                    onClick = { navController.navigate(BaikanScreen.OrderDetail.route) }) {
                     Text(text = "Selanjutnya")
                 }
             }
