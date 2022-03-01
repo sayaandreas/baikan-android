@@ -204,7 +204,11 @@ fun OnboardingScreen(navController: NavHostController) {
 
                     Button(
                         onClick = {
-                            navController.navigate(BaikanScreen.Home.route)
+                            navController.navigate(BaikanScreen.Home.route) {
+                                popUpTo(BaikanScreen.Onboarding.route) {
+                                    inclusive = true
+                                }
+                            }
                         },
                         shape = CircleShape,
                         modifier = Modifier.fillMaxWidth(),

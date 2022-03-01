@@ -10,12 +10,16 @@ import com.sayaandreas.baikanandroid.ui.onboarding.LoginScreen
 import com.sayaandreas.baikanandroid.ui.onboarding.OnboardingScreen
 import com.sayaandreas.baikanandroid.ui.onboarding.RegisterScreen
 import com.sayaandreas.baikanandroid.ui.onboarding.WelcomeScreen
+import com.sayaandreas.baikanandroid.ui.onboarding.register.RegisterAddressScreen
+import com.sayaandreas.baikanandroid.ui.onboarding.register.RegisterBirthDayScreen
+import com.sayaandreas.baikanandroid.ui.onboarding.register.RegisterGenderScreen
+import com.sayaandreas.baikanandroid.ui.onboarding.register.RegisterPhoneScreen
 import com.sayaandreas.baikanandroid.ui.payment.*
 
 @Composable
 fun Baikan(mainViewModel: MainViewModel) {
     val navController = rememberNavController()
-    
+
     NavHost(navController = navController, startDestination = BaikanScreen.Onboarding.route) {
         composable(BaikanScreen.Onboarding.route) {
             OnboardingScreen(navController)
@@ -25,6 +29,18 @@ fun Baikan(mainViewModel: MainViewModel) {
         }
         composable(BaikanScreen.Register.route) {
             RegisterScreen(navController, mainViewModel)
+        }
+        composable(BaikanScreen.RegisterGender.route) {
+            RegisterGenderScreen(navController)
+        }
+        composable(BaikanScreen.RegisterPhone.route) {
+            RegisterPhoneScreen(navController)
+        }
+        composable(BaikanScreen.RegisterBirthDay.route) {
+            RegisterBirthDayScreen(navController)
+        }
+        composable(BaikanScreen.RegisterAddress.route) {
+            RegisterAddressScreen(navController)
         }
         composable(BaikanScreen.Welcome.route) {
             WelcomeScreen(navController)

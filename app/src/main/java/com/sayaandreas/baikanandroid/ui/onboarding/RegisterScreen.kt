@@ -55,7 +55,7 @@ fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewMode
     }
 
     if (!isLoading && !showGoogleAuth && !isRegistered && mainViewModel.user.value != null) {
-        navController.navigate(BaikanScreen.Welcome.route) {
+        navController.navigate(BaikanScreen.RegisterGender.route) {
             popUpTo(BaikanScreen.Onboarding.route) {
                 inclusive = true
             }
@@ -231,7 +231,7 @@ fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewMode
                     Text(
                         text = "Masuk", modifier = Modifier
                             .clickable {
-                                navController.navigate(BaikanScreen.Register.route) {
+                                navController.navigate(BaikanScreen.Login.route) {
                                     popUpTo(BaikanScreen.Onboarding.route) {
                                         inclusive = true
                                     }
