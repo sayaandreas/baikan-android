@@ -194,7 +194,11 @@ fun OnboardingScreen(navController: NavHostController) {
                 ) {
                     Button(
                         onClick = {
-                            navController.navigate(BaikanScreen.Register.route)
+                            navController.navigate(BaikanScreen.Register.route) {
+                                popUpTo(BaikanScreen.Onboarding.route) {
+                                    inclusive = true
+                                }
+                            }
                         },
                         shape = CircleShape,
                         modifier = Modifier.fillMaxWidth()
@@ -226,7 +230,11 @@ fun OnboardingScreen(navController: NavHostController) {
                         Text(
                             text = "Masuk", modifier = Modifier
                                 .clickable {
-                                    navController.navigate(BaikanScreen.Login.route)
+                                    navController.navigate(BaikanScreen.Login.route) {
+                                        popUpTo(BaikanScreen.Onboarding.route) {
+                                            inclusive = true
+                                        }
+                                    }
                                 }, color = MaterialTheme.colors.primary
                         )
                     }

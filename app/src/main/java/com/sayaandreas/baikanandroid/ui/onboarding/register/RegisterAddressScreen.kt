@@ -1,72 +1,84 @@
 package com.sayaandreas.baikanandroid.ui.onboarding.register
 
-import android.app.DatePickerDialog
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RegisterAddressScreen(navController: NavHostController) {
-    var (expanded, setExpanded) = rememberSaveable { mutableStateOf(false) }
-    var (selected, setSelected) = rememberSaveable { mutableStateOf(0) }
-    val items = listOf("Alamat", "Jakarta", "Bandung", "Surabaya", "Makasar", "Medan", "Semarang")
+    val items = listOf("Jakarta", "Bandung", "Surabaya", "Makasar", "Medan", "Semarang")
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(items[0]) }
 
     RegisterLayout(
         title = "Masukkan alamat Kamu",
         imageRes = R.drawable.onboarding_1,
-        enableNext = selected != 0,
-        onBackPressed = {},
-        onSkipPressed = {},
-        onNextPressed = {
-            navController.navigate(BaikanScreen.Welcome.route)
+        enableNext = selectedOptionText != "",
+        onBackPressed = {
+            navController.popBackStack()
         },
-        content = {
+        onSkipPressed = {
+            navController.navigate(BaikanScreen.Home.route) {
+                popUpTo(BaikanScreen.RegisterGender.route) {
+                    inclusive = true
+                }
+            }
+        },
+        onNextPressed = {
+            navController.navigate(BaikanScreen.Welcome.route) {
+                popUpTo(BaikanScreen.RegisterGender.route) {
+                    inclusive = true
+                }
+            }
+        }
+    ) {
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                expanded = !expanded
+            },
+            Modifier.fillMaxWidth(),
+        ) {
             OutlinedTextField(
-                value = items[selected],
-                onValueChange = {},
-                enabled = false,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = { setExpanded(true) }),
-                shape = RoundedCornerShape(50),
+                readOnly = true,
+                value = selectedOptionText,
+                onValueChange = { },
+                label = { Text("Kota") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                modifier = Modifier.fillMaxWidth()
             )
-            DropdownMenu(
+            ExposedDropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
+                onDismissRequest = {
+                    expanded = false
+                }
             ) {
-                items.forEachIndexed { index, s ->
-                    DropdownMenuItem(onClick = {
-                        setSelected(index)
-                        setExpanded(false)
-                    }) {
-                        Text(text = s)
+                items.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        onClick = {
+                            selectedOptionText = selectionOption
+                            expanded = false
+                        }
+                    ) {
+                        Text(text = selectionOption)
                     }
                 }
             }
-        })
+        }
+    }
 }
 
 @Preview

@@ -1,4 +1,4 @@
-package com.sayaandreas.baikanandroid.ui.onboarding
+package com.sayaandreas.baikanandroid.ui.onboarding.register
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State

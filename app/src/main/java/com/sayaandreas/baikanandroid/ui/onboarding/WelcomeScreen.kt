@@ -57,7 +57,7 @@ fun WelcomeScreen(navController: NavHostController) {
             Button(
                 onClick = {
                     navController.navigate(BaikanScreen.Home.route) {
-                        popUpTo(BaikanScreen.Onboarding.route) {
+                        popUpTo(BaikanScreen.Welcome.route) {
                             inclusive = true
                         }
                     }

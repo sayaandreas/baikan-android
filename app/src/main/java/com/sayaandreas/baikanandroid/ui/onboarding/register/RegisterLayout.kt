@@ -21,7 +21,7 @@ fun RegisterLayout(
     title: String,
     imageRes: Int,
     enableNext: Boolean,
-    onBackPressed: () -> Unit,
+    onBackPressed: (() -> Unit)? = null,
     onSkipPressed: () -> Unit,
     onNextPressed: () -> Unit,
     content: @Composable () -> Unit
@@ -41,16 +41,18 @@ fun RegisterLayout(
                             Modifier
                                 .fillMaxWidth()
                                 .height(56.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                            horizontalArrangement = if (onBackPressed != null) Arrangement.SpaceBetween else Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            IconButton(onClick = { onBackPressed }) {
-                                Icon(
-                                    Icons.Default.ArrowBack,
-                                    contentDescription = null,
-                                )
+                            if (onBackPressed != null) {
+                                IconButton(onClick = onBackPressed) {
+                                    Icon(
+                                        Icons.Default.ArrowBack,
+                                        contentDescription = null,
+                                    )
+                                }
                             }
-                            TextButton(onClick = { onSkipPressed }) {
+                            TextButton(onClick = onSkipPressed) {
                                 Text(text = "Skip", color = Color.Black)
                             }
                         }

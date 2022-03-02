@@ -52,7 +52,7 @@ fun LoginScreen(navController: NavHostController, mainViewModel: MainViewModel) 
 
     if (!isLoading && !showGoogleAuth && !isLoggedIn && mainViewModel.user.value != null) {
         navController.navigate(BaikanScreen.Home.route) {
-            popUpTo(BaikanScreen.Onboarding.route) {
+            popUpTo(BaikanScreen.Login.route) {
                 inclusive = true
             }
         }
@@ -194,7 +194,7 @@ fun LoginScreen(navController: NavHostController, mainViewModel: MainViewModel) 
                         text = "Daftar", modifier = Modifier
                             .clickable {
                                 navController.navigate(BaikanScreen.Register.route) {
-                                    popUpTo(BaikanScreen.Onboarding.route) {
+                                    popUpTo(BaikanScreen.Login.route) {
                                         inclusive = true
                                     }
                                 }

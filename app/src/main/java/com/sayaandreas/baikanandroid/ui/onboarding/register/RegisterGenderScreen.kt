@@ -1,14 +1,9 @@
 package com.sayaandreas.baikanandroid.ui.onboarding.register
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -16,9 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,30 +28,35 @@ fun RegisterGenderScreen(navController: NavHostController) {
         title = "Pilih gender Kamu",
         imageRes = R.drawable.onboarding_1,
         enableNext = gender != "",
-        onBackPressed = {},
-        onSkipPressed = {},
-        onNextPressed = {
-            navController.navigate(BaikanScreen.RegisterPhone.route)
-        },
-        content = {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-            ) {
-                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                    GenderButton(
-                        title = "Laki - laki",
-                        selected = gender == "Laki - laki",
-                        icon = R.drawable.ic_baseline_male_24,
-                        onClick = { setGender(it) })
-                }
-                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                    GenderButton(title = "Perempuan", selected = gender == "Perempuan",
-                        icon = R.drawable.ic_baseline_female_24,
-                        onClick = { setGender(it) })
+        onSkipPressed = {
+            navController.navigate(BaikanScreen.Home.route) {
+                popUpTo(BaikanScreen.RegisterGender.route) {
+                    inclusive = true
                 }
             }
-        })
+        },
+        onNextPressed = {
+            navController.navigate(BaikanScreen.RegisterPhone.route)
+        }
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+        ) {
+            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                GenderButton(
+                    title = "Laki - laki",
+                    selected = gender == "Laki - laki",
+                    icon = R.drawable.ic_baseline_male_24,
+                    onClick = { setGender(it) })
+            }
+            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                GenderButton(title = "Perempuan", selected = gender == "Perempuan",
+                    icon = R.drawable.ic_baseline_female_24,
+                    onClick = { setGender(it) })
+            }
+        }
+    }
 }
 
 @Composable

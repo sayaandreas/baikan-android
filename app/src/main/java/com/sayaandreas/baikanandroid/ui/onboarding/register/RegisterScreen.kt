@@ -23,6 +23,7 @@ import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.model.User
 import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.ui.main.MainViewModel
+import com.sayaandreas.baikanandroid.ui.onboarding.register.RegisterViewModel
 
 @Composable
 fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewModel) {
@@ -56,7 +57,7 @@ fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewMode
 
     if (!isLoading && !showGoogleAuth && !isRegistered && mainViewModel.user.value != null) {
         navController.navigate(BaikanScreen.RegisterGender.route) {
-            popUpTo(BaikanScreen.Onboarding.route) {
+            popUpTo(BaikanScreen.Register.route) {
                 inclusive = true
             }
         }
@@ -232,7 +233,7 @@ fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewMode
                         text = "Masuk", modifier = Modifier
                             .clickable {
                                 navController.navigate(BaikanScreen.Login.route) {
-                                    popUpTo(BaikanScreen.Onboarding.route) {
+                                    popUpTo(BaikanScreen.Register.route) {
                                         inclusive = true
                                     }
                                 }
