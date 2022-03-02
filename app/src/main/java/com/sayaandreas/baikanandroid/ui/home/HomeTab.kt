@@ -18,11 +18,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import com.sayaandreas.baikanandroid.ui.theme.topAppBarLarge
@@ -31,40 +33,44 @@ import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-data class Counselor(val name: String, val title: String, val specialist: List<String>, val avatar: Int)
+data class Counselor(
+    val name: String,
+    val title: String,
+    val specialist: List<String>,
+    val avatar: Int
+)
+
 data class CounselingStep(val title: String, val description: String)
+
+val counselorList = listOf(
+    Counselor(
+        name = "Joshua Simorangkir",
+        title = "Psikolog - Medan",
+        specialist = listOf("Pekerjaan", "Pendidikan", "Sosial"),
+        avatar = R.drawable.counselor1
+
+    ),
+    Counselor(
+        name = "Evan Tanuwijaya",
+        title = "Psikolog - Jakarta",
+        specialist = listOf("Keluarga", "Pasangan"),
+        avatar = R.drawable.counselor2
+    ),
+    Counselor(
+        name = "Anastasya Febriana",
+        title = "Psikolog - Bandung",
+        specialist = listOf("Emosi", "Kecanduan"),
+        avatar = R.drawable.counselor3
+    )
+
+)
 
 @Composable
 fun HomeScreen(toggleDrawer: () -> Job) {
-    val counselorList = listOf(
-        Counselor(
-            name = "Joshua Simorangkir",
-            title = "Psikolog - Medan",
-            specialist = listOf("Pekerjaan", "Pendidikan", "Sosial"),
-            avatar = R.drawable.counselor1
-
-        ),
-        Counselor(
-            name = "Evan Tanuwijaya",
-            title = "Psikolog - Jakarta",
-            specialist = listOf("Keluarga", "Pasangan"),
-            avatar = R.drawable.counselor2
-        ),
-        Counselor(
-            name = "Anastasya Febriana",
-            title = "Psikolog - Bandung",
-            specialist = listOf("Emosi", "Kecanduan"),
-            avatar = R.drawable.counselor3
-        )
-
-    )
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
+    Box {
         TopAppBar(
             modifier = Modifier
+                .zIndex(10f)
                 .height(160.dp)
                 .clip(MaterialTheme.shapes.topAppBarLarge),
 
@@ -84,20 +90,20 @@ fun HomeScreen(toggleDrawer: () -> Job) {
                     }
                 }
             },
-            contentColor = MaterialTheme.colors.onPrimary
+            contentColor = MaterialTheme.colors.onPrimary,
+            elevation = 8.dp,
         )
         Column(
             Modifier
-                .padding(start = 18.dp, end = 16.dp, top = 32.dp)
+                .fillMaxSize()
+                .background(color = Color.White)
+                .verticalScroll(rememberScrollState())
+                .padding(start = 18.dp, end = 16.dp, top = 192.dp, bottom = 16.dp)
         ) {
             MainMenu()
-
             PromoBanner()
-
             CounselorList(counselorList)
-
             Stories()
-
             CounselingStep()
         }
     }
@@ -237,9 +243,18 @@ fun Stories() {
 @Composable
 fun CounselingStep() {
     val steps = listOf(
-        CounselingStep(title = "Daftar", description = "Daftar dan kamu akan dipasangkan dengan konselor kami"),
-        CounselingStep(title = "Tentukan Jadwal", description = "Bebas pilih waktu konselingmu sendiri (durasi 60 menit)"),
-        CounselingStep(title = "Sesi Konseling", description = "Chat, Voice Call, atau Video Call dengan konselor dan dapatkan saran terbaik"),
+        CounselingStep(
+            title = "Daftar",
+            description = "Daftar dan kamu akan dipasangkan dengan konselor kami"
+        ),
+        CounselingStep(
+            title = "Tentukan Jadwal",
+            description = "Bebas pilih waktu konselingmu sendiri (durasi 60 menit)"
+        ),
+        CounselingStep(
+            title = "Sesi Konseling",
+            description = "Chat, Voice Call, atau Video Call dengan konselor dan dapatkan saran terbaik"
+        ),
     )
     val lazyListState = rememberLazyListState()
     LazyRow(
@@ -252,7 +267,7 @@ fun CounselingStep() {
             .fillMaxWidth()
             .padding(top = 32.dp, bottom = 32.dp)
     ) {
-        items(items = steps, itemContent =  { step ->
+        items(items = steps, itemContent = { step ->
             Row(
                 Modifier
                     .clip(shape = MaterialTheme.shapes.medium)
@@ -282,7 +297,6 @@ fun CounselingStep() {
     }
 
 }
-
 
 
 @Preview(
