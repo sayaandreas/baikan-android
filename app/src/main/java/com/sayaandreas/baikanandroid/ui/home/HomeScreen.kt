@@ -1,8 +1,7 @@
 package com.sayaandreas.baikanandroid.ui.home
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -10,14 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.sayaandreas.baikanandroid.ui.theme.fab
 import kotlinx.coroutines.launch
+import com.sayaandreas.baikanandroid.R
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -34,7 +36,7 @@ fun HomeScreen(navController: NavHostController) {
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
-            Text("Drawer title", modifier = Modifier.padding(16.dp))
+            DrawerContent()
         },
         drawerShape = RectangleShape,
         floatingActionButton = {
@@ -61,7 +63,9 @@ fun HomeScreen(navController: NavHostController) {
     ) { innerPadding ->
         Crossfade(selectedTab, modifier = Modifier.padding(innerPadding)) { destination ->
             when (destination) {
-                NavHomeTab.HOME.title -> HomeScreen(toggleDrawer)
+                NavHomeTab.HOME.title -> HomeScreen(
+                    toggleDrawer = toggleDrawer,
+                    goToCounseling = { setSelectedTab(NavHomeTab.TOPICS.title) })
                 NavHomeTab.TOPICS.title -> TopicsTab(navController)
                 NavHomeTab.PROFILE.title -> ProfileTab()
                 NavHomeTab.NOTIFICATIONS.title -> NotificationsTab()
@@ -92,6 +96,47 @@ fun HomeBottomNavBar(
             )
             if (tab.title == "Counseling") {
                 Spacer(Modifier.weight(1f, true))
+            }
+        }
+    }
+}
+
+@Composable
+fun DrawerContent() {
+    val menuList = listOf(
+        "Home" to R.drawable.ic_home_outline,
+        "Riwayat" to R.drawable.ic_time_outline,
+        "Instagram" to R.drawable.ic_logo_instagram,
+        "Facebook" to R.drawable.ic_logo_facebook,
+        "Twitter" to R.drawable.ic_logo_twitter,
+        "Youtube" to R.drawable.ic_logo_youtube,
+        "Bantuan" to R.drawable.ic_call_outline,
+        "FAQ" to R.drawable.ic_information_circle_outline,
+        "Tentang" to R.drawable.ic_help_circle_outline
+    )
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(24.dp)) {
+        menuList.forEach {
+            val withDivider = it.first == "Riwayat" || it.first == "Youtube"
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = it.second),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.Black
+                )
+                Text(text = it.first)
+            }
+            if (withDivider) {
+                Divider(modifier = Modifier.padding(vertical = 10.dp))
             }
         }
     }

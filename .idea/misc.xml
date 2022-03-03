@@ -106,8 +106,28 @@
         <entry key="../../../../layout/compose-model-1646233701393.xml" value="0.12288851351351351" />
         <entry key="../../../../layout/compose-model-1646233797762.xml" value="0.12288851351351351" />
         <entry key="../../../../layout/compose-model-1646233937808.xml" value="0.12288851351351351" />
+        <entry key="../../../../layout/compose-model-1646246349720.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1646292357446.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1646294452183.xml" value="0.24070945945945946" />
+        <entry key="../../../../layout/compose-model-1646294692280.xml" value="0.24070945945945946" />
+        <entry key="../../../../layout/compose-model-1646315935763.xml" value="0.10347322720694646" />
         <entry key="app/src/main/res/drawable-v24/ic_baseline_folder_open_24.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_call_outline.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_clock_history.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_facebook.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_fnb.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_help_circle_outline.xml" value="0.1165" />
+        <entry key="app/src/main/res/drawable/ic_home_outline.xml" value="0.1165" />
+        <entry key="app/src/main/res/drawable/ic_house_fill.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_info_circle_fill.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_information_circle_outline.xml" value="0.1165" />
+        <entry key="app/src/main/res/drawable/ic_instagram.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_question_circle_fill.xml" value="0.1365" />
         <entry key="app/src/main/res/drawable/ic_shield_checkmark_outline.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_telephone_fill.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_time_outline.xml" value="0.1165" />
+        <entry key="app/src/main/res/drawable/ic_twitter.xml" value="0.1365" />
+        <entry key="app/src/main/res/drawable/ic_youtube.xml" value="0.1365" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1365" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1365" />
       </map>
