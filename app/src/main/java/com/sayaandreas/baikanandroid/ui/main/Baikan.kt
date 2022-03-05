@@ -54,7 +54,7 @@ fun Baikan(mainViewModel: MainViewModel) {
             WelcomeScreen(navController)
         }
         composable(BaikanScreen.Home.route) {
-            HomeScreen(navController)
+            HomeScreen(navController, mainViewModel)
         }
         composable(BaikanScreen.TopicIntro.route) {
             TopicIntroScreen(navController)

@@ -1,71 +1,129 @@
 package com.sayaandreas.baikanandroid.ui.counseling
 
 import android.annotation.SuppressLint
-import android.graphics.Color.rgb
+import android.os.CountDownTimer
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.sayaandreas.baikanandroid.R
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+enum class CounselingMethod() {
+    Chat,
+    Voice,
+    Video
+}
+
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun CallCounselorScreen(navController: NavHostController) {
-    val scope = rememberCoroutineScope()
     var (isWaiting, setIsWaiting) = rememberSaveable { mutableStateOf(true) }
+    val (method, setMethod) = rememberSaveable { mutableStateOf(CounselingMethod.Chat) }
 
-    scope.launch {
-        delay(4000)
-        setIsWaiting(false)
+    var callTime by remember {
+        mutableStateOf(1000L)
     }
+
+    var isRunning by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = callTime, key2 = isRunning) {
+        if (isRunning) {
+            delay(1000L)
+            callTime += 1000L
+        }
+    }
+
+    val closeSession = {
+        isRunning = false
+        navController.navigate(BaikanScreen.Home.route) {
+            popUpTo(BaikanScreen.CallCounselor.route) {
+                inclusive = true
+            }
+        }
+    }
+
+    val bgColor = when (method) {
+        CounselingMethod.Chat -> Color.White
+        else -> Color(50, 65, 90)
+    }
+
     Column(
         Modifier
             .fillMaxSize()
             .background(
-                color = if (isWaiting) MaterialTheme.colors.primary else Color(
-                    rgb(
-                        14,
-                        35,
-                        46
-                    )
-                )
+                color = if (isWaiting) MaterialTheme.colors.primary else bgColor
             )
     ) {
-        Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp)) {
-            if (isWaiting) {
-                Waiting()
-            } else {
-                Calling()
+        if (isWaiting) {
+            Waiting(doneWaiting = { setIsWaiting(false) })
+        } else {
+            Crossfade(targetState = method) { m ->
+                when (m) {
+                    CounselingMethod.Chat -> Chatting(
+                        closeSession,
+                        setMethod,
+                        startTimer = { isRunning = true })
+                    CounselingMethod.Voice -> Calling(closeSession, setMethod, callTime)
+                    CounselingMethod.Video -> VideoCalling(closeSession, setMethod, callTime)
+                }
             }
+
         }
     }
 }
 
 
 @Composable
-fun Waiting() {
+fun Waiting(doneWaiting: () -> Unit) {
+    var currentTime by remember {
+        mutableStateOf(30L * 1000L)
+    }
+
+    var isRunning by remember {
+        mutableStateOf(true)
+    }
+
+    LaunchedEffect(key1 = currentTime, key2 = isRunning) {
+        if (currentTime > 0 && isRunning) {
+            delay(1000L)
+            currentTime -= 1000L
+        }
+    }
+
+    if (currentTime == 27000L) {
+        isRunning = false
+        doneWaiting()
+    }
+
+
     Column(
         Modifier
             .fillMaxWidth()
@@ -98,8 +156,8 @@ fun Waiting() {
 
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "1")
-                Text(text = "Menit")
+                Text(text = "${currentTime / 1000}")
+                Text(text = "Detik")
             }
         }
         Text(
@@ -117,36 +175,211 @@ fun Waiting() {
 }
 
 @Composable
-fun Calling() {
-    val img: Painter = painterResource(id = R.drawable.counselor1)
+fun Calling(closeSession: () -> Unit, setMethod: (m: CounselingMethod) -> Unit, callTime: Long) {
+    val callTimeSec = callTime % 60000 / 1000;
+    val callTimeMin = callTime / 60000;
+    val callTimeSecFmt = if (callTimeSec > 9) callTimeSec else "0$callTimeSec"
+    val callTimeMinFmt = if (callTimeMin > 9) callTimeMin else "0$callTimeMin"
+    val img: Painter = painterResource(id = R.drawable.selfi_d)
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(vertical = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier.padding(bottom = 8.dp),
+                text = "Joshua Simorangkir",
+                style = MaterialTheme.typography.h5,
+                color = Color.White
+            )
+            Text(
+                modifier = Modifier.padding(bottom = 48.dp),
+                text = "$callTimeMinFmt:$callTimeSecFmt",
+                color = Color.White
+            )
+            Image(
+                painter = img,
+                contentDescription = null,
+                Modifier
+                    .size(120.dp)
+                    .clip(shape = CircleShape)
+            )
+        }
+
+        Column(Modifier.fillMaxWidth()) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 48.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(end = 16.dp)
+                ) {
+                    IconButton(
+                        onClick = { /*TODO*/ },
+                        Modifier
+                            .border(1.dp, color = Color.White, shape = CircleShape)
+                            .padding(10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_volume_mute_24),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(end = 16.dp)
+                ) {
+                    IconButton(
+                        onClick = { setMethod(CounselingMethod.Chat) },
+                        Modifier
+                            .border(1.dp, color = Color.White, shape = CircleShape)
+                            .padding(10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_message_24),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(end = 16.dp)
+                ) {
+                    IconButton(
+                        onClick = { setMethod(CounselingMethod.Video) },
+                        Modifier
+                            .border(1.dp, color = Color.White, shape = CircleShape)
+                            .padding(10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_videocam_24),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(
+                        onClick = { /*TODO*/ },
+                        Modifier
+                            .border(1.dp, color = Color.White, shape = CircleShape)
+                            .padding(10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_speaker_phone_24),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+            }
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                IconButton(
+                    onClick = {
+                        closeSession()
+                    },
+                    Modifier
+                        .clip(shape = CircleShape)
+                        .background(color = Color.Red)
+                        .padding(10.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_call_end_24),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+
+        }
+
+    }
+}
+
+@Composable
+fun VideoCalling(
+    closeSession: () -> Unit,
+    setMethod: (m: CounselingMethod) -> Unit,
+    callTime: Long
+) {
+    val img: Painter = painterResource(id = R.drawable.selfi_c)
+    val callTimeSec = callTime % 60000 / 1000;
+    val callTimeMin = callTime / 60000;
+    val callTimeSecFmt = if (callTimeSec > 9) callTimeSec else "0$callTimeSec"
+    val callTimeMinFmt = if (callTimeMin > 9) callTimeMin else "0$callTimeMin"
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(vertical = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            modifier = Modifier.padding(bottom = 8.dp),
-            text = "Joshua Simorangkir",
-            style = MaterialTheme.typography.h5,
-            color = Color.White
-        )
-        Text(
-            modifier = Modifier.padding(bottom = 48.dp),
-            text = "00:30",
-            color = Color.White
-        )
-        Image(
-            painter = img,
-            contentDescription = null,
+        Column(
             Modifier
-                .size(120.dp)
-                .clip(shape = CircleShape)
-        )
+                .fillMaxWidth()
+                .height(90.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier.padding(bottom = 8.dp),
+                text = "Anastasya Febriana",
+                style = MaterialTheme.typography.h5,
+                color = Color.White
+            )
+            Text(
+                text = "$callTimeMinFmt:$callTimeSecFmt",
+                color = Color.White
+            )
+        }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            Image(
+                painter = img,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillHeight
+            )
+            Image(
+                painter = painterResource(id = R.drawable.selfie),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 24.dp, bottom = 24.dp)
+                    .border(2.dp, Color.White)
+                    .width(110.dp)
+                    .height(150.dp),
+                contentScale = ContentScale.FillBounds
+            )
+        }
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(top = 48.dp),
+                .padding(vertical = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -155,72 +388,244 @@ fun Calling() {
                 modifier = Modifier.padding(end = 16.dp)
             ) {
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { setMethod(CounselingMethod.Chat) },
                     Modifier
                         .border(1.dp, color = Color.White, shape = CircleShape)
-                        .padding(16.dp)
+                        .padding(10.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_baseline_volume_mute_24),
+                        painter = painterResource(id = R.drawable.ic_baseline_message_24),
                         contentDescription = null,
                         tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
-                Text(text = "Mute", modifier = Modifier.padding(top = 8.dp), color = Color.White)
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(end = 16.dp)
             ) {
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        closeSession()
+                    },
                     Modifier
-                        .border(1.dp, color = Color.White, shape = CircleShape)
-                        .padding(16.dp)
+                        .background(color = Color.Red, shape = CircleShape)
+                        .padding(10.dp),
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_baseline_message_24),
+                        painter = painterResource(id = R.drawable.ic_baseline_call_end_24),
                         contentDescription = null,
                         tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
-                Text(text = "Message", modifier = Modifier.padding(top = 8.dp), color = Color.White)
             }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { setMethod(CounselingMethod.Voice) },
                     Modifier
                         .border(1.dp, color = Color.White, shape = CircleShape)
-                        .padding(16.dp)
+                        .padding(10.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_baseline_speaker_phone_24),
+                        painter = painterResource(id = R.drawable.ic_baseline_videocam_off_24),
                         contentDescription = null,
                         tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
-                Text(text = "Speaker", modifier = Modifier.padding(top = 8.dp), color = Color.White)
+            }
+        }
+    }
+}
+
+@Composable
+fun Chatting(
+    closeSession: () -> Unit,
+    setMethod: (m: CounselingMethod) -> Unit,
+    startTimer: () -> Unit
+) {
+    val (showAlert, setShowAlert) = rememberSaveable { mutableStateOf(false) }
+    Column(
+        Modifier
+            .fillMaxSize()
+    ) {
+        Row(
+            Modifier
+                .background(color = MaterialTheme.colors.primary)
+                .fillMaxWidth()
+                .height(64.dp)
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxHeight()
+            ) {
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.clickable { setShowAlert(true) }
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.selfi_d),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .clip(shape = CircleShape)
+                        .size(36.dp)
+                )
+                Text(
+                    text = "Anastasya Febriana",
+                    color = Color.White,
+                    style = MaterialTheme.typography.subtitle1
+                )
+            }
+
+            Row() {
+                Icon(
+                    Icons.Default.Phone,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.clickable {
+                        setMethod(CounselingMethod.Voice)
+                        startTimer()
+                    }
+                )
+                Icon(
+                    painterResource(id = R.drawable.ic_baseline_videocam_24),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .clickable {
+                            setMethod(CounselingMethod.Video)
+                            startTimer()
+                        }
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(
+            Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 16.dp, start = 16.dp)
+                    .clip(shape = RoundedCornerShape(8.dp))
+                    .fillMaxWidth(2 / 3f)
+                    .background(color = Color(235, 235, 235))
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+            ) {
+                Text(text = "Halo Johny", color = Color.Black)
+                Text(
+                    text = "09.00",
+                    color = Color.DarkGray,
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.align(
+                        Alignment.BottomEnd
+                    )
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .padding(top = 16.dp, start = 16.dp)
+                    .clip(shape = RoundedCornerShape(8.dp))
+                    .fillMaxWidth(2 / 3f)
+                    .background(color = Color(235, 235, 235))
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+            ) {
+                Text(text = "Apa kabar?", color = Color.Black)
+                Text(
+                    text = "09.00",
+                    color = Color.DarkGray,
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.align(
+                        Alignment.BottomEnd
+                    )
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(top = 16.dp, end = 16.dp)
+                    .clip(shape = RoundedCornerShape(8.dp))
+                    .fillMaxWidth(2 / 3f)
+                    .background(color = MaterialTheme.colors.primaryVariant)
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+            ) {
+                Text(text = "Hai", color = Color.Black)
+                Text(
+                    text = "09.01",
+                    color = Color.DarkGray,
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.align(
+                        Alignment.BottomEnd
+                    )
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(top = 16.dp, end = 16.dp)
+                    .clip(shape = RoundedCornerShape(8.dp))
+                    .fillMaxWidth(2 / 3f)
+                    .background(color = MaterialTheme.colors.primaryVariant)
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+            ) {
+                Text(text = "Boleh call sekarang?", color = Color.Black)
+                Text(
+                    text = "09.01",
+                    color = Color.DarkGray,
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.align(
+                        Alignment.BottomEnd
+                    )
+                )
+            }
+        }
+        Divider()
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                modifier = Modifier
+                    .weight(1f)
+                    .height(50.dp),
+                shape = CircleShape
+            )
+            IconButton(onClick = { /*TODO*/ }, modifier = Modifier.padding(start = 16.dp)) {
+                Icon(Icons.Default.Send, contentDescription = null)
             }
         }
 
-        Row(Modifier.padding(top = 32.dp)) {
-            IconButton(
-                onClick = { /*TODO*/ },
-                Modifier
-                    .clip(shape = CircleShape)
-                    .background(color = Color.Red)
-                    .padding(16.dp),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_call_end_24),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(32.dp)
-                )
-            }
+        if (showAlert) {
+            AlertDialog(
+                onDismissRequest = { setShowAlert(false) },
+                confirmButton = {
+                    Button(onClick = { closeSession() }) {
+                        Text(text = "Ya, tutup")
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(onClick = { setShowAlert(false) }) {
+                        Text(text = "Batal")
+                    }
+                },
+                title = { Text(text = "Tutup Sesi") },
+                text = { Text(text = "Apakah kamu yakin ingin menutup sesi ini ?") })
         }
     }
 }

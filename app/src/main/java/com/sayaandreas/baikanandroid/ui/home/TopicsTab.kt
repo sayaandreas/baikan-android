@@ -1,29 +1,50 @@
 package com.sayaandreas.baikanandroid.ui.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.navigation.NavHostController
-import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
+import com.sayaandreas.baikanandroid.model.Counselor
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 data class Topic(val title: String, val icon: Int)
 
 @Composable
-fun TopicsTab(navController: NavHostController) {
+fun TopicsTab(
+    navController: NavHostController,
+    quick: Boolean = false,
+    counselorList: List<Counselor>
+) {
     var (selectedTopic, setSelectedTopic) = rememberSaveable { mutableStateOf("") }
+    var (showDialog, setShowDialog) = rememberSaveable { mutableStateOf(false) }
     val counselingTopics = listOf(
         Topic(title = "Pekerjaan", icon = R.drawable.briefcase),
         Topic(title = "Keluarga", icon = R.drawable.family),
@@ -53,7 +74,11 @@ fun TopicsTab(navController: NavHostController) {
                 ) {
                     Button(
                         onClick = {
-                            navController.navigate(BaikanScreen.TopicIntro.route)
+                            if (quick) {
+                                setShowDialog(true)
+                            } else {
+                                navController.navigate(BaikanScreen.TopicIntro.route)
+                            }
                         },
                         Modifier.fillMaxWidth(),
                         shape = MaterialTheme.shapes.large
@@ -62,6 +87,20 @@ fun TopicsTab(navController: NavHostController) {
                     }
                 }
             }
+        }
+
+        if (showDialog) {
+            SelectCounselorDialog(
+                onDismissRequest = { setShowDialog(false) },
+                onSuccess = {
+                    setShowDialog(false)
+                    navController.navigate(BaikanScreen.CallCounselor.route) {
+                        popUpTo(BaikanScreen.Home.route) {
+                            inclusive = true
+                        }
+                    }
+                }, counselorList = counselorList
+            )
         }
     }
 }
@@ -104,12 +143,13 @@ fun CounselingTopics(
                         Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Image(
+                        Icon(
                             painter = image,
                             contentDescription = "",
                             Modifier
                                 .size(32.dp)
-                                .padding(bottom = 8.dp)
+                                .padding(bottom = 8.dp),
+                            tint = if (isSelected) Color.White else Color.Black
                         )
                         Text(text = topicTitle, style = MaterialTheme.typography.caption)
                     }
@@ -117,4 +157,109 @@ fun CounselingTopics(
             }
         }
     )
+}
+
+@SuppressLint("CoroutineCreationDuringComposition")
+@Composable
+fun SelectCounselorDialog(
+    onDismissRequest: () -> Unit,
+    onSuccess: () -> Unit,
+    counselorList: List<Counselor>
+) {
+    val (isLoading, setIsLoading) = remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
+
+    scope.launch {
+        delay(1500L)
+        setIsLoading(false)
+    }
+
+    Dialog(
+        onDismissRequest = { onDismissRequest() },
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            securePolicy = SecureFlagPolicy.Inherit
+        )
+    ) {
+        if (isLoading) {
+            Column(
+                modifier = Modifier
+                    .clip(
+                        RoundedCornerShape(12.dp)
+                    )
+                    .fillMaxWidth()
+                    .height(400.dp)
+                    .background(Color.White),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(modifier = Modifier.padding(bottom = 8.dp))
+                Text(text = "Mencari konselor yang tersedia")
+            }
+            return@Dialog
+        }
+        Card(
+            elevation = 8.dp,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp)
+        ) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = 24.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
+            ) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Pilih Konselor", style = MaterialTheme.typography.subtitle1)
+                }
+                Divider(Modifier.padding(top = 24.dp, bottom = 8.dp))
+                counselorList.forEach {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onSuccess()
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = SpaceBetween,
+                    ) {
+                        Row(
+                            Modifier.weight(1f),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Image(
+                                painter = painterResource(id = it.image),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(shape = CircleShape)
+                                    .padding(end = 8.dp),
+                            )
+                            Column() {
+                                Text(text = it.name)
+                                Text(
+                                    text = "${it.specialist[0].title}, ${it.specialist[0].title}",
+                                    fontSize = 12.sp,
+                                    color = Color.Gray
+                                )
+                            }
+                        }
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_arrow_forward_ios_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(18.dp)
+                        )
+                    }
+                    Divider(Modifier.padding(top = 8.dp, bottom = 8.dp))
+                }
+            }
+        }
+    }
 }

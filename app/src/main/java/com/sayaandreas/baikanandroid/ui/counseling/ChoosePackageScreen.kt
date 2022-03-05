@@ -25,7 +25,6 @@ import com.sayaandreas.baikanandroid.R
 
 @Composable
 fun ChoosePackageScreen(navController: NavHostController) {
-    val image: Painter = painterResource(id = R.drawable.working)
     var (selectedTab, setSelectedTab) = rememberSaveable { mutableStateOf(1) }
     var (selectedCard, setSelectedCard) = rememberSaveable { mutableStateOf(0) }
 
@@ -198,7 +197,7 @@ fun ProductCard(
         modifier = Modifier
             .fillMaxWidth(),
         border = BorderStroke(1.dp, color = MaterialTheme.colors.primary),
-        backgroundColor = if (selected) MaterialTheme.colors.primaryVariant else Color.White,
+        backgroundColor = if (selected) MaterialTheme.colors.primaryVariant.copy(0.7f) else Color.White,
         onClick = { onClick(num) }
     ) {
         Row(
@@ -217,7 +216,7 @@ fun ProductCard(
                     color = if (selected) MaterialTheme.colors.primary else Color.Black
                 )
                 Spacer(Modifier.size(4.dp))
-                Text(text = desc1, fontSize = 11.sp)
+                Text(text = desc1, fontSize = 11.sp, )
                 Text(text = desc2, fontSize = 11.sp)
             }
             TagText(firstimer)

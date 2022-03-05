@@ -2,6 +2,7 @@ package com.sayaandreas.baikanandroid.ui.home
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -16,15 +17,21 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.navigation.NavHostController
 import com.sayaandreas.baikanandroid.ui.theme.fab
 import kotlinx.coroutines.launch
 import com.sayaandreas.baikanandroid.R
+import com.sayaandreas.baikanandroid.ui.main.MainViewModel
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
     val scaffoldState = rememberScaffoldState()
     val (selectedTab, setSelectedTab) = rememberSaveable { mutableStateOf(NavHomeTab.HOME.title) }
+    val (showDialog, setShowDialog) = rememberSaveable { mutableStateOf(false) }
+    val (quick, setQuick) = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val toggleDrawer = {
         scope.launch {
@@ -43,7 +50,9 @@ fun HomeScreen(navController: NavHostController) {
             FloatingActionButton(
                 contentColor = Color.White,
                 backgroundColor = MaterialTheme.colors.primary,
-                onClick = {}
+                onClick = {
+                    setShowDialog(true)
+                }
             ) {
                 Icon(
                     Icons.Default.Add,
@@ -63,13 +72,28 @@ fun HomeScreen(navController: NavHostController) {
     ) { innerPadding ->
         Crossfade(selectedTab, modifier = Modifier.padding(innerPadding)) { destination ->
             when (destination) {
-                NavHomeTab.HOME.title -> HomeScreen(
+                NavHomeTab.HOME.title -> HomeTab(
                     toggleDrawer = toggleDrawer,
-                    goToCounseling = { setSelectedTab(NavHomeTab.TOPICS.title) })
-                NavHomeTab.TOPICS.title -> TopicsTab(navController)
+                    goToCounseling = { setSelectedTab(NavHomeTab.TOPICS.title) },
+                    counselorList = mainViewModel.counselorList
+                )
+                NavHomeTab.TOPICS.title -> TopicsTab(
+                    navController,
+                    quick,
+                    mainViewModel.counselorList
+                )
                 NavHomeTab.PROFILE.title -> ProfileTab()
                 NavHomeTab.NOTIFICATIONS.title -> NotificationsTab()
             }
+        }
+        if (showDialog) {
+            QuickCounselingDialog(
+                onDismissRequest = { setShowDialog(false) },
+                onSuccess = {
+                    setQuick(true)
+                    setShowDialog(false)
+                    setSelectedTab(NavHomeTab.TOPICS.title)
+                })
         }
     }
 }
@@ -117,7 +141,8 @@ fun DrawerContent() {
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(24.dp)) {
+            .padding(24.dp)
+    ) {
         menuList.forEach {
             val withDivider = it.first == "Riwayat" || it.first == "Youtube"
             Row(
@@ -137,6 +162,57 @@ fun DrawerContent() {
             }
             if (withDivider) {
                 Divider(modifier = Modifier.padding(vertical = 10.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun QuickCounselingDialog(
+    onDismissRequest: () -> Unit,
+    onSuccess: () -> Unit
+) {
+
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            securePolicy = SecureFlagPolicy.Inherit
+        )
+    ) {
+        Card(
+            elevation = 8.dp,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(270.dp)
+        ) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "Konseling 24 Jam", style = MaterialTheme.typography.h6)
+                Text(
+                    text = "Hai, kamu bisa konseling kapan pun karena layanan kami tersedia selama 24 JAM.",
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+                Button(
+                    onClick = onSuccess, modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 32.dp)
+                ) {
+                    Text(text = "Pilih Topik")
+                }
+                OutlinedButton(
+                    onClick = onDismissRequest, modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(text = "Batal")
+                }
+
             }
         }
     }

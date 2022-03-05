@@ -1,8 +1,11 @@
 package com.sayaandreas.baikanandroid.ui.home
 
+import androidx.activity.viewModels
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement.Center
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,12 +30,15 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.sayaandreas.baikanandroid.R
+import com.sayaandreas.baikanandroid.model.Counselor
+import com.sayaandreas.baikanandroid.ui.main.MainViewModel
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import com.sayaandreas.baikanandroid.ui.theme.topAppBarLarge
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
@@ -42,41 +48,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
-data class Counselor(
-    val name: String,
-    val title: String,
-    val specialist: List<String>,
-    val avatar: Int
-)
 
 data class CounselingStep(val title: String, val description: String)
 
-val counselorList = listOf(
-    Counselor(
-        name = "Joshua Simorangkir",
-        title = "Psikolog - Medan",
-        specialist = listOf("Pekerjaan", "Pendidikan", "Sosial"),
-        avatar = R.drawable.counselor1
-
-    ),
-    Counselor(
-        name = "Evan Tanuwijaya",
-        title = "Psikolog - Jakarta",
-        specialist = listOf("Keluarga", "Pasangan"),
-        avatar = R.drawable.counselor2
-    ),
-    Counselor(
-        name = "Anastasya Febriana",
-        title = "Psikolog - Bandung",
-        specialist = listOf("Emosi", "Kecanduan"),
-        avatar = R.drawable.counselor3
-    )
-
-)
-
-
 @Composable
-fun HomeScreen(goToCounseling: () -> Unit, toggleDrawer: () -> Job) {
+fun HomeTab(
+    goToCounseling: () -> Unit,
+    toggleDrawer: () -> Job,
+    counselorList: List<Counselor>
+) {
     val scrollState = rememberScrollState(0)
     val (showDialog, setShowDialog) = remember {
         mutableStateOf(false)
@@ -89,26 +69,27 @@ fun HomeScreen(goToCounseling: () -> Unit, toggleDrawer: () -> Job) {
         TopAppBar(
             modifier = Modifier
                 .zIndex(10f)
-                .height(160.dp)
+                .height(170.dp)
                 .clip(MaterialTheme.shapes.topAppBarLarge),
 
             content = {
                 Column(Modifier.fillMaxWidth()) {
                     Row {
                         IconButton(onClick = { toggleDrawer() }) {
-                            Icon(Icons.Filled.Menu, contentDescription = null)
+                            Icon(Icons.Filled.Menu, contentDescription = null, tint = Color.White)
                         }
                     }
-                    Column(Modifier.padding(start = 14.dp, end = 14.dp, top = 24.dp)) {
+                    Column(Modifier.padding(start = 14.dp, end = 14.dp, top = 16.dp)) {
                         Text(
                             text = "Halo, Johny Pramono",
-                            style = MaterialTheme.typography.h5
+                            style = MaterialTheme.typography.h4,
+                            color = Color.White
                         )
-                        Text(text = "You will be fine, even finer")
+                        Text(text = "You will be fine, even finer", color = Color.White)
                     }
                 }
             },
-            contentColor = MaterialTheme.colors.onPrimary,
+            contentColor = Color.White,
             elevation = 8.dp,
         )
         Column(
@@ -155,103 +136,133 @@ fun HomeScreen(goToCounseling: () -> Unit, toggleDrawer: () -> Job) {
 
 @Composable
 fun MainMenu(showMeditation: () -> Unit, goToCounseling: () -> Unit) {
-    val imgKonseling: Painter = painterResource(id = R.drawable.conversation)
-    val imgMeditasi: Painter = painterResource(id = R.drawable.meditation)
 
-    Text(text = "Butuh bantuan apa?", style = MaterialTheme.typography.subtitle1)
+    Text(text = "Butuh bantuan apa?", style = MaterialTheme.typography.h6)
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp, bottom = 32.dp),
-        horizontalArrangement = Arrangement.Center,
+            .padding(top = 16.dp, bottom = 32.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
             Modifier
-                .size(140.dp)
-                .padding(end = 12.dp)
+                .weight(1f)
+                .aspectRatio(7 / 8f)
+                .background(
+                    color = MaterialTheme.colors.primary,
+                    shape = RoundedCornerShape(24.dp)
+                )
                 .clickable {
                     goToCounseling()
-                }, horizontalAlignment = Alignment.CenterHorizontally
+                },
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Image(painter = imgKonseling, contentDescription = "", Modifier.fillMaxWidth(.8f))
-            Text(text = "Konseling")
+            Image(
+                painter = painterResource(id = R.drawable.ic_menu_counseling),
+                contentDescription = "",
+                Modifier
+                    .fillMaxSize(.7f)
+                    .padding(bottom = 8.dp)
+            )
+            Text(
+                text = "Konseling",
+                style = MaterialTheme.typography.subtitle2,
+                color = Color.White
+            )
         }
         Column(
             Modifier
-                .size(140.dp)
-                .padding(start = 12.dp)
+                .weight(1f)
+                .aspectRatio(7 / 8f)
+                .background(
+                    color = MaterialTheme.colors.secondary,
+                    shape = RoundedCornerShape(24.dp)
+                )
                 .clickable {
                     showMeditation()
-                }, horizontalAlignment = Alignment.CenterHorizontally
+                },
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Image(painter = imgMeditasi, contentDescription = "", Modifier.fillMaxWidth(.8f))
-            Text(text = "Self Healing")
+            Image(
+                painter = painterResource(id = R.drawable.meditation),
+                contentDescription = "",
+                Modifier
+                    .fillMaxSize(.7f)
+                    .padding(bottom = 8.dp)
+            )
+            Text(
+                text = "Self Healing",
+                style = MaterialTheme.typography.subtitle2,
+                color = Color.White
+            )
         }
     }
 }
 
+data class ClickableBoosterMenu(
+    val title: String,
+    @DrawableRes val icon: Int,
+    val type: BoosterDialogType
+)
+
 @Composable
 fun BoosterMenu(setShowDialog: (type: BoosterDialogType) -> Unit) {
-    val imgSport: Painter = painterResource(id = R.drawable.sport)
-    val imgEntertaiment: Painter = painterResource(id = R.drawable.ic_entertaiment)
-    val imgFnb: Painter = painterResource(id = R.drawable.ic_fnb)
-
-    Text(text = "Ingin mengurangi stres mu?", style = MaterialTheme.typography.subtitle1)
+    val menuList = listOf(
+        ClickableBoosterMenu(
+            title = "Sport",
+            icon = R.drawable.ic_ic_menu_sport,
+            BoosterDialogType.Sport
+        ),
+        ClickableBoosterMenu(
+            title = "Entertaiment",
+            icon = R.drawable.ic_menu_entertaiment,
+            BoosterDialogType.Entertaiment
+        ),
+        ClickableBoosterMenu(title = "F&B", icon = R.drawable.ic_menu_food, BoosterDialogType.Fnb)
+    )
+    Text(text = "Ingin mengurangi stres mu?", style = MaterialTheme.typography.h6)
     Row(
         Modifier
             .fillMaxWidth()
             .padding(top = 24.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(32.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
-            Modifier
-                .weight(1f)
-                .clickable {
-                    setShowDialog(BoosterDialogType.Sport)
-                }, horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = imgSport,
-                contentDescription = "",
+        menuList.forEach {
+            Column(
                 Modifier
-                    .size(110.dp)
-                    .padding(bottom = 8.dp)
-            )
-            Text(text = "Sport")
-        }
-        Column(
-            Modifier
-                .weight(1f)
-                .clickable {
-                    setShowDialog(BoosterDialogType.Entertaiment)
-                }, horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = imgEntertaiment,
-                contentDescription = "",
-                Modifier
-                    .size(110.dp)
-                    .padding(bottom = 8.dp)
-            )
-            Text(text = "Entertaiment")
-        }
-        Column(
-            Modifier
-                .weight(1f)
-                .clickable {
-                    setShowDialog(BoosterDialogType.Fnb)
-                }, horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = imgFnb,
-                contentDescription = "",
-                Modifier
-                    .size(110.dp)
-                    .padding(bottom = 8.dp)
-            )
-            Text(text = "F&B")
+                    .weight(1f)
+                    .aspectRatio(7 / 8f)
+                    .clickable {
+                        setShowDialog(it.type)
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Center
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth(.7f)
+                        .aspectRatio(1f)
+                        .border(2.dp, MaterialTheme.colors.primary, CircleShape)
+                ) {
+                    Icon(
+                        painter = painterResource(id = it.icon),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxSize(.5f),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+                Text(
+                    text = it.title,
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
         }
     }
 }
@@ -308,7 +319,7 @@ fun CounselorList(list: List<Counselor>) {
 
 @Composable
 fun CounselorRow(c: Counselor) {
-    val image: Painter = painterResource(id = c.avatar)
+    val image: Painter = painterResource(id = c.image)
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -331,13 +342,12 @@ fun CounselorRow(c: Counselor) {
                     .padding(16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(Modifier.padding(bottom = 24.dp)) {
+                Column(Modifier.padding(bottom = 8.dp)) {
                     Text(text = c.name, Modifier.padding(end = 8.dp))
-                    Text(text = c.title, style = MaterialTheme.typography.body2)
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FlowRow(crossAxisSpacing = 4.dp, mainAxisSpacing = 4.dp) {
                     c.specialist.forEach { item ->
-                        TagText(text = item)
+                        TagText(text = item.title)
                     }
                 }
 
@@ -929,7 +939,7 @@ fun BoosterDialog(
     heightDp = 2000
 )
 @Composable
-fun HomePromoBanner() {
+fun HomeTabPreview() {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val toggleDrawer = {
@@ -939,9 +949,10 @@ fun HomePromoBanner() {
             }
         }
     }
+    val mainViewModel: MainViewModel = viewModel()
     BaikanAndroidTheme {
         Surface {
-            HomeScreen(toggleDrawer = toggleDrawer, goToCounseling = {})
+            HomeTab(goToCounseling = {}, toggleDrawer = toggleDrawer, mainViewModel.counselorList)
         }
     }
 }

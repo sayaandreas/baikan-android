@@ -26,7 +26,6 @@ fun PaymentSuccessScreen(navController: NavHostController) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colors.primary)
     ) {
         Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp)) {
             Column(
@@ -50,14 +49,14 @@ fun PaymentSuccessScreen(navController: NavHostController) {
                         )
                         .padding(6.dp)
                         .clip(shape = CircleShape)
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.colors.primary)
                         .padding(24.dp)
 
                 ) {
                     Icon(
                         Icons.Filled.Check,
                         contentDescription = null,
-                        tint = MaterialTheme.colors.primary,
+                        tint = Color.White,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -65,39 +64,40 @@ fun PaymentSuccessScreen(navController: NavHostController) {
                     modifier = Modifier.padding(top = 24.dp),
                     text = "Pembayaran Berhasil",
                     style = MaterialTheme.typography.h5,
-                    color = Color.White
+                    color = MaterialTheme.colors.primary
                 )
             }
 
-            Row(
-                Modifier
-                    .padding(top = 32.dp)
-                    .clip(shape = MaterialTheme.shapes.large)
-                    .fillMaxWidth()
-                    .background(color = Color.White)
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(text = "Paket", style = MaterialTheme.typography.subtitle1)
-                    Text(text = "Nyaman", style = MaterialTheme.typography.h4)
-                    Text(
-                        text = "Berlaku hingga 31 Desember 2022",
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
+            Card(elevation = 4.dp, modifier = Modifier.padding(top = 32.dp)) {
+                Row(
+                    Modifier
+                        .clip(shape = MaterialTheme.shapes.large)
+                        .fillMaxWidth()
+                        .background(color = Color.White)
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text(text = "Paket", style = MaterialTheme.typography.subtitle1)
+                        Text(text = "Nyaman", style = MaterialTheme.typography.h4)
+                        Text(
+                            text = "Berlaku hingga 31 Desember 2022",
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                    Column {
+                        TagText("1X")
+                    }
                 }
-                Column {
-                    TagText("1X")
-                }
+
             }
 
             Column(
                 Modifier
                     .fillMaxWidth()
                     .padding(top = 48.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                OutlinedButton(
+                Button(
                     onClick = {
                         navController.navigate(BaikanScreen.CallCounselor.route)
                     },
@@ -105,16 +105,7 @@ fun PaymentSuccessScreen(navController: NavHostController) {
                 ) {
                     Text(
                         text = "Konsultasi Sekarang",
-                        style = MaterialTheme.typography.h5
                     )
-                    Icon(
-                        Icons.Filled.ArrowForward,
-                        contentDescription = null,
-                        Modifier
-                            .size(28.dp)
-                            .padding(start = 4.dp)
-                    )
-
                 }
 
                 OutlinedButton(

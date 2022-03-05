@@ -1,7 +1,10 @@
 package com.sayaandreas.baikanandroid.ui.counseling
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -11,6 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 
 @Composable
 fun CounselingAgreementScreen(navController: NavHostController) {
@@ -35,11 +41,18 @@ fun CounselingAgreementScreen(navController: NavHostController) {
                 Icon(Icons.Default.ArrowBack, contentDescription = null)
             }
         })
-        Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp)) {
+        Column(
+            Modifier
+                .padding(start = 16.dp, end = 16.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                )
+        ) {
             Text(
                 text = "Dengan ini anda menyatakan:",
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                modifier = Modifier.padding(top = 24.dp)
             )
             Column(
                 Modifier
@@ -88,13 +101,18 @@ fun CounselingAgreementScreen(navController: NavHostController) {
                     Text(text = "Telah membaca serta menyetujui syarat dan ketentuan berlaku di bawah")
                 }
             }
-            TextButton(onClick = { /*TODO*/ }) {
+            TextButton(onClick = { /*TODO*/ }, modifier = Modifier.padding(top = 32.dp)) {
                 Text(text = "Syarat dan ketentuan berlaku")
             }
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .border(width = 1.dp, color = MaterialTheme.colors.primary)
+                    .background(color = Color(255, 232, 169))
+                    .border(
+                        width = 1.dp,
+                        color = Color(255, 232, 169),
+                        shape = MaterialTheme.shapes.large
+                    )
                     .padding(16.dp)
             ) {
                 Icon(
@@ -120,7 +138,7 @@ fun CounselingAgreementScreen(navController: NavHostController) {
 @Composable
 fun CounselingAgreementPreview() {
     val navController = rememberNavController()
-    MaterialTheme() {
+    BaikanAndroidTheme() {
         Surface {
             CounselingAgreementScreen(navController)
         }

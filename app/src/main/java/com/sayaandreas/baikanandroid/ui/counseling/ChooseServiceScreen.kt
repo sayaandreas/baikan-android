@@ -28,7 +28,6 @@ fun ChooseServiceScreen(navController: NavHostController) {
     Column(
         Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         TopAppBar(title = { Text(text = "Pilih Layanan") }, navigationIcon = {
             IconButton(
@@ -39,7 +38,11 @@ fun ChooseServiceScreen(navController: NavHostController) {
                 Icon(Icons.Default.ArrowBack, contentDescription = null)
             }
         })
-        Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp)) {
+        Column(
+            Modifier
+                .padding(start = 16.dp, end = 16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
             Image(
                 painter = image,
                 contentDescription = "",
@@ -93,7 +96,7 @@ fun ChooseServiceScreen(navController: NavHostController) {
                     text = "Direkomendasikan untuk kamu yang memiliki masalah cukup berat hingga rumit"
                 )
             }
-            Column(Modifier.padding(top = 24.dp, end = 16.dp, start = 16.dp)) {
+            Column(Modifier.padding(top = 32.dp, end = 16.dp, start = 16.dp)) {
                 Text(text = "Pilih Jenis Layanan", style = MaterialTheme.typography.subtitle1)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -101,13 +104,17 @@ fun ChooseServiceScreen(navController: NavHostController) {
                 ) {
                     RadioButton(
                         selected = selectedService === "1",
-                        onClick = { setSelectedService("1") })
+                        onClick = { setSelectedService("1") },
+                        colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.primary)
+                    )
                     Text(text = "Psikolog (Lulusan S2 Psikologi)")
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
                         selected = selectedService === "2",
-                        onClick = { setSelectedService("2") })
+                        onClick = { setSelectedService("2") },
+                        colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.primary)
+                    )
                     Text(text = "Konselor (Lulusan S1 Psikologi)")
                 }
 

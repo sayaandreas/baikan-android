@@ -34,74 +34,96 @@ fun OrderDetailScreen(navController: NavHostController) {
             }
         })
         Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp)) {
-            Text(text = "Order ID: SLJX-WEOPL-SWRFK-SLSIK")
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .background(color = Color.LightGray)
-            ) {
-                Column(Modifier.weight(6f)) {
-                    Text(text = "Produk")
-                }
-                Column(Modifier.weight(2f)) {
-                    Text(text = "Qty")
-                }
-                Column(Modifier.weight(3f)) {
-                    Text(text = "Jumlah")
-                }
-            }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-            ) {
-                Column(Modifier.weight(6f)) {
-                    Text(text = "Paket Nyaman")
-                }
-                Column(Modifier.weight(2f)) {
-                    Text(text = "1")
-                }
-                Column(Modifier.weight(3f)) {
-                    Text(text = "149.000")
-                }
-            }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(Modifier.weight(6f)) {
-                    Text(text = "Total")
-                }
-                Column(Modifier.weight(2f)) {
-                    Text(text = "")
-                }
-                Column(Modifier.weight(3f)) {
-                    Text(text = "149.000")
+            Text(text = "Produk", style = MaterialTheme.typography.h6)
+            Card(elevation = 2.dp, modifier = Modifier.padding(top = 16.dp)) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp, horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = "Paket Nyaman",
+                        style = MaterialTheme.typography.subtitle2,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(28.dp)
+                    )
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)
+                    ) {
+                        Text(text = "Harga", modifier = Modifier.weight(3f), color = Color.Gray)
+                        Text(text = "149.000", modifier = Modifier.weight(1f))
+                    }
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)
+                    ) {
+                        Text(text = "Qty", modifier = Modifier.weight(3f), color = Color.Gray)
+                        Text(text = "1", modifier = Modifier.weight(1f))
+                    }
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)
+                    ) {
+                        Text(text = "Subtotal", modifier = Modifier.weight(3f), color = Color.Gray)
+                        Text(text = "149.000", modifier = Modifier.weight(1f))
+                    }
                 }
             }
 
-            Row(Modifier.padding(top = 24.dp, bottom = 8.dp)) {
-                Text(text = "Info Pelanggan")
+            Text(
+                text = "Info Pelanggan",
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier.padding(top = 32.dp)
+            )
+            Card(elevation = 2.dp, modifier = Modifier.padding(top = 16.dp)) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Nama", color = Color.Gray)
+                        Text(text = "Johny Pramono")
+                    }
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Nomor HP", color = Color.Gray)
+                        Text(text = "085272XXXXX")
+                    }
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Email", color = Color.Gray)
+                        Text(text = "johnyisworking@gmail.com")
+                    }
+                }
             }
-            Divider(Modifier.padding(bottom = 8.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column() {
-                    Text(text = "Nama")
-                }
-                Column() {
-                    Text(text = "Johny Pramono")
-                }
-            }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column() {
-                    Text(text = "Email")
-                }
-                Column() {
-                    Text(text = "johnypramono@gmail.com")
-                }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 48.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "Jumlah Bayar", style = MaterialTheme.typography.h6)
+                Text(text = "149.000", style = MaterialTheme.typography.h6)
             }
 
             Row(Modifier.padding(top = 32.dp)) {

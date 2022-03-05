@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -24,12 +25,6 @@ import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 
 @Composable
 fun PaymentDetailScreen(navController: NavHostController) {
-    val bca: Painter = painterResource(id = R.drawable.bca)
-    val bri: Painter = painterResource(id = R.drawable.bri)
-    val mandiri: Painter = painterResource(id = R.drawable.mandiri)
-    val bni: Painter = painterResource(id = R.drawable.bni)
-    val permata: Painter = painterResource(id = R.drawable.permata)
-    val bersama: Painter = painterResource(id = R.drawable.bersama)
     Column(
         Modifier
             .fillMaxSize()
@@ -48,7 +43,7 @@ fun PaymentDetailScreen(navController: NavHostController) {
                 Modifier
                     .clip(shape = RoundedCornerShape(8.dp))
                     .fillMaxWidth()
-                    .background(color = MaterialTheme.colors.primaryVariant)
+                    .background(color = Color(255, 232, 169))
                     .padding(16.dp)
             ) {
                 Text(text = "Harap selesaikan pembayaran sebelum:")
@@ -68,7 +63,7 @@ fun PaymentDetailScreen(navController: NavHostController) {
             }
             Text(text = "a/n PT. Baikan Cahaya Abadi")
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Salin nomor rekeing", color = Color.Blue)
+            Text(text = "Salin nomor rekeing", textDecoration = TextDecoration.Underline)
             Divider(Modifier.padding(vertical = 32.dp))
             Text(text = "Jumlah yang harus dibayar:")
             Spacer(Modifier.height(16.dp))
@@ -78,7 +73,7 @@ fun PaymentDetailScreen(navController: NavHostController) {
                 style = MaterialTheme.typography.h5
             )
             Spacer(Modifier.height(16.dp))
-            Text(text = "Salin jumlah", color = Color.Blue)
+            Text(text = "Salin jumlah", textDecoration = TextDecoration.Underline)
             Row(Modifier.padding(top = 52.dp)) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
