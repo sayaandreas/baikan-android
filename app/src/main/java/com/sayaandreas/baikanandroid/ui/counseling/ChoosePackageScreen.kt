@@ -3,6 +3,7 @@ package com.sayaandreas.baikanandroid.ui.counseling
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,22 +12,35 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
+import com.sayaandreas.baikanandroid.model.Package
+import com.sayaandreas.baikanandroid.model.PackageType
+import com.sayaandreas.baikanandroid.model.Tag
+import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 
 @Composable
 fun ChoosePackageScreen(navController: NavHostController) {
-    var (selectedTab, setSelectedTab) = rememberSaveable { mutableStateOf(1) }
-    var (selectedCard, setSelectedCard) = rememberSaveable { mutableStateOf(0) }
+    val packageTypes =
+        listOf(PackageType.Text.name, PackageType.VoiceCall.name, PackageType.VideoCall.name)
+    val packages = Package.getAll()
+    val textPackages = packages.subList(0, 3)
+    val voicePackages = packages.subList(3, 5)
+    val videoPackages = packages.subList(5, 6)
+    var (selectedTab, setSelectedTab) = rememberSaveable { mutableStateOf(PackageType.Text.name) }
+    var (selectedPackage, setSelectedPackage) = rememberSaveable { mutableStateOf(0) }
 
     Column(
         Modifier
@@ -41,164 +55,108 @@ fun ChoosePackageScreen(navController: NavHostController) {
                 Icon(Icons.Default.ArrowBack, contentDescription = null)
             }
         })
-        Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp)) {
-            Text(text = "Pilih Paket Konseling", style = MaterialTheme.typography.h5)
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(start = 16.dp, end = 16.dp, top = 24.dp)
+        ) {
             Row(
                 Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                Button(onClick = {
-                    if (selectedTab != 1) {
-                        setSelectedTab(1)
-                        setSelectedCard(0)
+                packageTypes.forEach {
+                    val selected = selectedTab == it
+                    OutlinedButton(
+                        onClick = {
+                            if (!selected) {
+                                setSelectedTab(it)
+                                setSelectedPackage(0)
+                            }
+                        }, Modifier.weight(1f), colors = ButtonDefaults.outlinedButtonColors(
+                            backgroundColor = if (selected) MaterialTheme.colors.primary else Color.White,
+                            contentColor = if (selected) Color.White else MaterialTheme.colors.primary,
+                        ), shape = CircleShape
+                    ) {
+                        Text(text = it, style = MaterialTheme.typography.subtitle2)
                     }
-                }, Modifier.weight(1f)) {
-                    Text(text = "Text", fontSize = 11.sp)
-                }
-                Button(onClick = {
-                    if (selectedTab != 2) {
-                        setSelectedTab(2)
-                        setSelectedCard(0)
-                    }
-                }, Modifier.weight(1f)) {
-                    Text(text = "Call", fontSize = 11.sp)
-                }
-                Button(onClick = {
-                    if (selectedTab != 3) {
-                        setSelectedTab(3)
-                        setSelectedCard(0)
-                    }
-                }, Modifier.weight(1f)) {
-                    Text(text = "Video Call", fontSize = 11.sp)
                 }
             }
             Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 16.dp)
             ) {
-                Icon(
-                    Icons.Default.Info,
-                    tint = MaterialTheme.colors.primary,
-                    contentDescription = null
+                Icon(Icons.Default.Info, contentDescription = null)
+                Text(
+                    text = "Durasi konseling $selectedTab per sesi = 60 menit",
+                    modifier = Modifier.padding(start = 4.dp)
                 )
-                Spacer(modifier = Modifier.size(4.dp))
-                Text(text = "Durasi Konseling Text per Sesi = 60 Menit")
             }
             Column(
                 Modifier.padding(top = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 when (selectedTab) {
-                    1 -> {
-                        Tab1(selectedCard, setSelectedCard)
+                    PackageType.Text.name -> {
+                        PackageTab(selectedPackage, setSelectedPackage, textPackages)
                     }
-                    2 -> {
-                        Tab2(selectedCard, setSelectedCard)
+                    PackageType.VoiceCall.name -> {
+                        PackageTab(selectedPackage, setSelectedPackage, voicePackages)
                     }
-                    3 -> {
-                        Tab3(selectedCard, setSelectedCard)
+                    PackageType.VideoCall.name -> {
+                        PackageTab(selectedPackage, setSelectedPackage, videoPackages)
                     }
                 }
             }
-            Row(Modifier.padding(vertical = 24.dp)) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.large,
-                    onClick = {
-                        if (selectedCard != 0) {
-                            navController.navigate(BaikanScreen.ChooseCounselor.route)
-                        }
-                    }) {
-                    Text(text = "Selanjutnya")
-                }
+        }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 24.dp)
+        ) {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
+                onClick = {
+                    if (selectedPackage != 0) {
+                        navController.navigate(BaikanScreen.ChooseCounselor.route)
+                    }
+                },
+                enabled = selectedPackage != 0
+            ) {
+                Text(text = "Pilih Paket")
             }
         }
     }
 }
 
 @Composable
-fun Tab1(selectedCard: Int, onClick: (v: Int) -> Unit) {
-    ProductCard(
-        "Paket Perkenalan",
-        "Rp 100.000/1x Sesi",
-        "- Harga 100.000/sesi",
-        "- Masa Berlaku 1 minggu",
-        true,
-        selectedCard == 1,
-        1,
-        onClick
-    )
-    ProductCard(
-        "Paket Nyaman",
-        "Rp 924.000/12x Sesi",
-        "- Harga 77.000/sesi",
-        "- Masa Berlaku 4 Bulan + Garansi uang kembali",
-        false,
-        selectedCard == 2,
-        2,
-        onClick
-    )
-}
-
-@Composable
-fun Tab2(selectedCard: Int, onClick: (v: Int) -> Unit) {
-    ProductCard(
-        "Paket Perkenalan",
-        "Rp 149.000/1x Sesi",
-        "- Harga 100.000/sesi",
-        "- Masa Berlaku 1 minggu",
-        true,
-        selectedCard == 1,
-        1,
-        onClick
-    )
-    ProductCard(
-        "Paket Nyaman",
-        "Rp 550.000/4x Sesi",
-        "- Harga 137.500/sesi",
-        "- Masa Berlaku 1 minggu",
-        false,
-        selectedCard == 2,
-        2,
-        onClick
-    )
-}
-
-@Composable
-fun Tab3(selectedCard: Int, onClick: (v: Int) -> Unit) {
-    ProductCard(
-        "Paket Perkenalan",
-        "Rp 300.000/1x Sesi",
-        "- Harga 300.000/sesi",
-        "- Masa Berlaku 1 minggu",
-        true,
-        selectedCard == 1,
-        1,
-        onClick,
-    )
+fun PackageTab(selectedCard: Int, onClick: (v: Int) -> Unit, list: List<Package>) {
+    list.forEach {
+        ProductCard(
+            selectedCard, it, onClick
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductCard(
-    name: String,
-    price: String,
-    desc1: String,
-    desc2: String,
-    firstimer: Boolean,
-    selected: Boolean,
-    num: Int,
+    selectedCard: Int,
+    product: Package,
     onClick: (v: Int) -> Unit
 ) {
+    val selected = selectedCard == product.id
     Card(
         modifier = Modifier
             .fillMaxWidth(),
-        border = BorderStroke(1.dp, color = MaterialTheme.colors.primary),
-        backgroundColor = if (selected) MaterialTheme.colors.primaryVariant.copy(0.7f) else Color.White,
-        onClick = { onClick(num) }
+        border = BorderStroke(
+            1.dp,
+            color = if (selected) MaterialTheme.colors.primary else Color.LightGray
+        ),
+        backgroundColor = Color.White,
+        onClick = { onClick(product.id) }
     ) {
         Row(
             Modifier
@@ -207,37 +165,48 @@ fun ProductCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(Modifier.weight(1f)) {
-                Text(text = name)
+                Text(text = product.name)
                 Spacer(Modifier.size(4.dp))
                 Text(
-                    text = price,
+                    text = "Rp ${product.finalTotalPrice} / ${product.sessionQty}x sesi",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = if (selected) MaterialTheme.colors.primary else Color.Black
                 )
                 Spacer(Modifier.size(4.dp))
-                Text(text = desc1, fontSize = 11.sp, )
-                Text(text = desc2, fontSize = 11.sp)
+                Text(text = product.description1, fontSize = 11.sp)
+                Text(text = product.description2, fontSize = 11.sp)
             }
-            TagText(firstimer)
+            product.tag?.let { TagText(it) }
         }
 
     }
 }
 
 @Composable
-fun TagText(firstimer: Boolean) {
+fun TagText(tag: Tag) {
     Box(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(50))
-            .background(color = if (firstimer) MaterialTheme.colors.primary else Color.Green)
+            .background(color = tag.color)
             .padding(horizontal = 6.dp, vertical = 4.dp)
     ) {
         Text(
-            text = if (firstimer) "For First Timer" else "Best Value",
+            text = tag.text,
             color = Color.White,
             fontSize = 11.sp
         )
+    }
+}
+
+@Preview
+@Composable
+fun ChoosePackagePreview() {
+    val navController = rememberNavController()
+    BaikanAndroidTheme() {
+        Surface() {
+            ChoosePackageScreen(navController)
+        }
     }
 }
 

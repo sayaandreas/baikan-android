@@ -10,10 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {
-    val users = listOf(
-        User("Johny Pramono", "johnyisworking@gmail.com"),
-        User("Johny Pramono", "johnypersonal@gmail.com")
-    )
+    val users = User.getAll().take(2)
 
     private val _isLoading: MutableState<Boolean> = mutableStateOf(false)
     val isLoading: MutableState<Boolean> get() = _isLoading

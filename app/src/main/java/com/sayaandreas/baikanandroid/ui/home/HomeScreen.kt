@@ -1,5 +1,6 @@
 package com.sayaandreas.baikanandroid.ui.home
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
@@ -24,6 +27,8 @@ import androidx.navigation.NavHostController
 import com.sayaandreas.baikanandroid.ui.theme.fab
 import kotlinx.coroutines.launch
 import com.sayaandreas.baikanandroid.R
+import com.sayaandreas.baikanandroid.model.Counselor
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.ui.main.MainViewModel
 
 @Composable
@@ -43,7 +48,9 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
-            DrawerContent()
+            DrawerContent(navController = navController, logoutUser = {
+                mainViewModel.logoutUser()
+            })
         },
         drawerShape = RectangleShape,
         floatingActionButton = {
@@ -55,8 +62,9 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
                 }
             ) {
                 Icon(
-                    Icons.Default.Add,
+                    painter = painterResource(id = R.drawable._4_hours_svgrepo_com),
                     contentDescription = null,
+                    modifier = Modifier.size(24.dp)
                 )
             }
 
@@ -74,15 +82,27 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
             when (destination) {
                 NavHomeTab.HOME.title -> HomeTab(
                     toggleDrawer = toggleDrawer,
-                    goToCounseling = { setSelectedTab(NavHomeTab.TOPICS.title) },
-                    counselorList = mainViewModel.counselorList
+                    goToCounseling = {
+                        mainViewModel.setQuick(false)
+                        setSelectedTab(NavHomeTab.TOPICS.title)
+                    },
+                    counselorList = mainViewModel.counselorList,
+                    currentUser = mainViewModel.currentUser.value,
+                    goToCounselorDetail = { c: Counselor ->
+                        mainViewModel.selectCounselor(c)
+                        navController.navigate(BaikanScreen.CounselorDetail.route)
+                    }
                 )
                 NavHomeTab.TOPICS.title -> TopicsTab(
+                    mainViewModel,
                     navController,
-                    quick,
+                    mainViewModel.quick.value,
                     mainViewModel.counselorList
                 )
-                NavHomeTab.PROFILE.title -> ProfileTab()
+                NavHomeTab.PROFILE.title -> ProfileTab(
+                    navController = navController,
+                    mainViewModel = mainViewModel
+                )
                 NavHomeTab.NOTIFICATIONS.title -> NotificationsTab()
             }
         }
@@ -90,7 +110,7 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
             QuickCounselingDialog(
                 onDismissRequest = { setShowDialog(false) },
                 onSuccess = {
-                    setQuick(true)
+                    mainViewModel.setQuick(true)
                     setShowDialog(false)
                     setSelectedTab(NavHomeTab.TOPICS.title)
                 })
@@ -113,7 +133,7 @@ fun HomeBottomNavBar(
                 onClick = { onTabChange(tab.title) },
                 icon = {
                     Icon(
-                        tab.icon,
+                        painter = painterResource(id = tab.icon),
                         contentDescription = null,
                     )
                 },
@@ -126,7 +146,7 @@ fun HomeBottomNavBar(
 }
 
 @Composable
-fun DrawerContent() {
+fun DrawerContent(navController: NavHostController, logoutUser: () -> Unit) {
     val menuList = listOf(
         "Home" to R.drawable.ic_home_outline,
         "Riwayat" to R.drawable.ic_time_outline,
@@ -141,30 +161,52 @@ fun DrawerContent() {
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(24.dp)
     ) {
-        menuList.forEach {
-            val withDivider = it.first == "Riwayat" || it.first == "Youtube"
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = it.second),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Black
-                )
-                Text(text = it.first)
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(24.dp)
+        ) {
+            menuList.forEach {
+                val withDivider = it.first == "Riwayat" || it.first == "Youtube"
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = it.second),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Black
+                    )
+                    Text(text = it.first)
+                }
+                if (withDivider) {
+                    Divider(modifier = Modifier.padding(vertical = 10.dp))
+                }
             }
-            if (withDivider) {
-                Divider(modifier = Modifier.padding(vertical = 10.dp))
+        }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(24.dp), horizontalArrangement = Arrangement.Center
+        ) {
+            OutlinedButton(onClick = {
+                navController.navigate(BaikanScreen.Login.route) {
+                    popUpTo(BaikanScreen.Login.route) {
+                        inclusive = true
+                    }
+                }
+                logoutUser()
+            }) {
+                Text(text = "Logout")
             }
         }
     }
+
 }
 
 @Composable
@@ -220,10 +262,13 @@ fun QuickCounselingDialog(
 
 enum class NavHomeTab(
     val title: String,
-    val icon: ImageVector
+    @DrawableRes val icon: Int
 ) {
-    HOME("Home", Icons.Filled.Home),
-    TOPICS("Counseling", Icons.Filled.Email),
-    PROFILE("Profile", Icons.Filled.AccountCircle),
-    NOTIFICATIONS("Notifications", Icons.Filled.Notifications);
+    HOME("Home", R.drawable.ic_baseline_home_24),
+    TOPICS(
+        "Counseling",
+        R.drawable.ic_baseline_chat_bubble_24
+    ),
+    PROFILE("Profile", R.drawable.ic_baseline_account_circle_24),
+    NOTIFICATIONS("Notifications", R.drawable.ic_baseline_notifications_24);
 }

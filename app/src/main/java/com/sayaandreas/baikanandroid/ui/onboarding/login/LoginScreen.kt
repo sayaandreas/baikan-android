@@ -1,4 +1,4 @@
-package com.sayaandreas.baikanandroid.ui.onboarding
+package com.sayaandreas.baikanandroid.ui.onboarding.login
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -22,6 +22,7 @@ import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.model.User
 import com.sayaandreas.baikanandroid.ui.main.MainViewModel
+import com.sayaandreas.baikanandroid.ui.onboarding.GoogleAuthDialog
 
 @Composable
 fun LoginScreen(navController: NavHostController, mainViewModel: MainViewModel) {
@@ -43,14 +44,14 @@ fun LoginScreen(navController: NavHostController, mainViewModel: MainViewModel) 
     val enableLoginButton =
         email.isNotBlank() && password.isNotBlank()
 
-    if (isLoading && user != null && mainViewModel.user.value == null) {
+    if (isLoading && user != null && mainViewModel.currentUser.value == null) {
         user?.let {
             mainViewModel.setCurrentUser(it)
             loginViewModel.doneLoading()
         }
     }
 
-    if (!isLoading && !showGoogleAuth && !isLoggedIn && mainViewModel.user.value != null) {
+    if (!isLoading && !showGoogleAuth && !isLoggedIn && mainViewModel.currentUser.value != null) {
         navController.navigate(BaikanScreen.Home.route) {
             popUpTo(BaikanScreen.Login.route) {
                 inclusive = true

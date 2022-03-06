@@ -32,11 +32,10 @@ import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
+import com.sayaandreas.baikanandroid.model.ImageDataLocal
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
-
-data class Slide(val title: String, val img: Int)
 
 @Composable
 fun Desc1() {
@@ -113,15 +112,15 @@ fun OnboardingScreen(navController: NavHostController) {
 
 
     val slideList = listOf(
-        Slide(
+        ImageDataLocal(
             "Vitamin",
             R.drawable.onboarding_1,
         ),
-        Slide(
+        ImageDataLocal(
             "Obat",
             R.drawable.onboarding_3
         ),
-        Slide(
+        ImageDataLocal(
             "Antibiotik",
             R.drawable.onboarding_4
         ),
@@ -246,11 +245,11 @@ fun OnboardingScreen(navController: NavHostController) {
 
 @Composable
 internal fun PagerSampleItem(
-    data: Slide,
+    data: ImageDataLocal,
     modifier: Modifier = Modifier,
     description: @Composable () -> Unit
 ) {
-    val image: Painter = painterResource(id = data.img)
+    val image: Painter = painterResource(id = data.resId)
     Column(modifier.height(520.dp)) {
         Row(
             Modifier
@@ -268,7 +267,7 @@ internal fun PagerSampleItem(
             )
         }
         Text(
-            text = data.title,
+            text = data.descciption,
             color = MaterialTheme.colors.primary,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,

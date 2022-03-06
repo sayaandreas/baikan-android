@@ -28,8 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.MainViewModel
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -42,7 +44,7 @@ enum class CounselingMethod() {
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun CallCounselorScreen(navController: NavHostController) {
+fun CallCounselorScreen(navController: NavHostController, mainViewModel: MainViewModel) {
     var (isWaiting, setIsWaiting) = rememberSaveable { mutableStateOf(true) }
     val (method, setMethod) = rememberSaveable { mutableStateOf(CounselingMethod.Chat) }
 
@@ -90,9 +92,20 @@ fun CallCounselorScreen(navController: NavHostController) {
                     CounselingMethod.Chat -> Chatting(
                         closeSession,
                         setMethod,
-                        startTimer = { isRunning = true })
-                    CounselingMethod.Voice -> Calling(closeSession, setMethod, callTime)
-                    CounselingMethod.Video -> VideoCalling(closeSession, setMethod, callTime)
+                        startTimer = { isRunning = true }, mainViewModel
+                    )
+                    CounselingMethod.Voice -> Calling(
+                        closeSession,
+                        setMethod,
+                        callTime,
+                        mainViewModel
+                    )
+                    CounselingMethod.Video -> VideoCalling(
+                        closeSession,
+                        setMethod,
+                        callTime,
+                        mainViewModel
+                    )
                 }
             }
 
@@ -175,7 +188,12 @@ fun Waiting(doneWaiting: () -> Unit) {
 }
 
 @Composable
-fun Calling(closeSession: () -> Unit, setMethod: (m: CounselingMethod) -> Unit, callTime: Long) {
+fun Calling(
+    closeSession: () -> Unit,
+    setMethod: (m: CounselingMethod) -> Unit,
+    callTime: Long,
+    mainViewModel: MainViewModel
+) {
     val callTimeSec = callTime % 60000 / 1000;
     val callTimeMin = callTime / 60000;
     val callTimeSecFmt = if (callTimeSec > 9) callTimeSec else "0$callTimeSec"
@@ -194,7 +212,7 @@ fun Calling(closeSession: () -> Unit, setMethod: (m: CounselingMethod) -> Unit, 
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 8.dp),
-                text = "Joshua Simorangkir",
+                text = mainViewModel.selectedCounselor.value?.name ?: "",
                 style = MaterialTheme.typography.h5,
                 color = Color.White
             )
@@ -203,12 +221,12 @@ fun Calling(closeSession: () -> Unit, setMethod: (m: CounselingMethod) -> Unit, 
                 text = "$callTimeMinFmt:$callTimeSecFmt",
                 color = Color.White
             )
-            Image(
-                painter = img,
+            AsyncImage(
+                model = mainViewModel.selectedCounselor.value?.image ?: "",
                 contentDescription = null,
-                Modifier
+                modifier = Modifier
                     .size(120.dp)
-                    .clip(shape = CircleShape)
+                    .clip(shape = CircleShape),
             )
         }
 
@@ -324,7 +342,8 @@ fun Calling(closeSession: () -> Unit, setMethod: (m: CounselingMethod) -> Unit, 
 fun VideoCalling(
     closeSession: () -> Unit,
     setMethod: (m: CounselingMethod) -> Unit,
-    callTime: Long
+    callTime: Long,
+    mainViewModel: MainViewModel
 ) {
     val img: Painter = painterResource(id = R.drawable.selfi_c)
     val callTimeSec = callTime % 60000 / 1000;
@@ -344,7 +363,7 @@ fun VideoCalling(
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 8.dp),
-                text = "Anastasya Febriana",
+                text = mainViewModel.selectedCounselor.value?.name ?: "",
                 style = MaterialTheme.typography.h5,
                 color = Color.White
             )
@@ -358,8 +377,8 @@ fun VideoCalling(
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            Image(
-                painter = img,
+            AsyncImage(
+                model = mainViewModel.selectedCounselor.value?.image ?: "",
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillHeight
@@ -446,7 +465,8 @@ fun VideoCalling(
 fun Chatting(
     closeSession: () -> Unit,
     setMethod: (m: CounselingMethod) -> Unit,
-    startTimer: () -> Unit
+    startTimer: () -> Unit,
+    mainViewModel: MainViewModel
 ) {
     val (showAlert, setShowAlert) = rememberSaveable { mutableStateOf(false) }
     Column(
@@ -472,8 +492,8 @@ fun Chatting(
                     tint = Color.White,
                     modifier = Modifier.clickable { setShowAlert(true) }
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.selfi_d),
+                AsyncImage(
+                    model = mainViewModel.selectedCounselor.value?.image ?: "",
                     contentDescription = null,
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
@@ -481,7 +501,7 @@ fun Chatting(
                         .size(36.dp)
                 )
                 Text(
-                    text = "Anastasya Febriana",
+                    text = mainViewModel.selectedCounselor.value?.name ?: "",
                     color = Color.White,
                     style = MaterialTheme.typography.subtitle1
                 )
@@ -636,7 +656,7 @@ fun CallCounselorScreenPreview() {
     val navController = rememberNavController()
     BaikanAndroidTheme() {
         Surface {
-            CallCounselorScreen(navController)
+            CallCounselorScreen(navController, MainViewModel(null))
         }
     }
 }

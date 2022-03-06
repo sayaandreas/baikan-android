@@ -21,4 +21,5 @@ sealed class BaikanScreen(val route: String) {
     object PaymentDetail : BaikanScreen("PaymentDetail")
     object PaymentSuccess : BaikanScreen("PaymentSuccess")
     object CallCounselor : BaikanScreen("CallCounselor")
+    object CounselorDetail : BaikanScreen("CounselorDetail")
 }

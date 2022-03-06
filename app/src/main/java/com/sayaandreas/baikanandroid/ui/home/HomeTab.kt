@@ -31,6 +31,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -38,6 +39,7 @@ import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.model.Counselor
+import com.sayaandreas.baikanandroid.model.User
 import com.sayaandreas.baikanandroid.ui.main.MainViewModel
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import com.sayaandreas.baikanandroid.ui.theme.topAppBarLarge
@@ -55,7 +57,9 @@ data class CounselingStep(val title: String, val description: String)
 fun HomeTab(
     goToCounseling: () -> Unit,
     toggleDrawer: () -> Job,
-    counselorList: List<Counselor>
+    counselorList: List<Counselor>,
+    currentUser: User? = null,
+    goToCounselorDetail: (c: Counselor) -> Unit
 ) {
     val scrollState = rememberScrollState(0)
     val (showDialog, setShowDialog) = remember {
@@ -64,6 +68,7 @@ fun HomeTab(
     val (showBoosterDialog, setShowBoosterDialog) = remember {
         mutableStateOf<BoosterDialogType?>(null)
     }
+    val username = currentUser?.name ?: "Guest"
 
     Column() {
         TopAppBar(
@@ -81,7 +86,7 @@ fun HomeTab(
                     }
                     Column(Modifier.padding(start = 14.dp, end = 14.dp, top = 16.dp)) {
                         Text(
-                            text = "Halo, Johny Pramono",
+                            text = "Halo, $username",
                             style = MaterialTheme.typography.h4,
                             color = Color.White
                         )
@@ -108,7 +113,7 @@ fun HomeTab(
             }, goToCounseling = goToCounseling)
             BoosterMenu(setShowBoosterDialog)
             PromoBanner()
-            CounselorList(counselorList)
+            CounselorList(counselorList, goToDetail = goToCounselorDetail)
             Stories()
             CounselingStep()
             Image(
@@ -305,33 +310,35 @@ fun PromoBanner() {
 }
 
 @Composable
-fun CounselorList(list: List<Counselor>) {
+fun CounselorList(list: List<Counselor>, goToDetail: (c: Counselor) -> Unit) {
     Column(
         Modifier.padding(top = 32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(text = "Konselor Pilihan", style = MaterialTheme.typography.subtitle1)
         list.forEach { item ->
-            CounselorRow(item)
+            CounselorRow(item, selectCounselor = goToDetail)
         }
     }
 }
 
 @Composable
-fun CounselorRow(c: Counselor) {
-    val image: Painter = painterResource(id = c.image)
+fun CounselorRow(c: Counselor, selectCounselor: (c: Counselor) -> Unit) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                selectCounselor(c)
+            },
         elevation = 8.dp
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(start = 24.dp)
         ) {
-            Image(
-                painter = image,
-                contentDescription = "",
+            AsyncImage(
+                model = c.image,
+                contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)
                     .clip(shape = CircleShape),
@@ -343,7 +350,7 @@ fun CounselorRow(c: Counselor) {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(Modifier.padding(bottom = 8.dp)) {
-                    Text(text = c.name, Modifier.padding(end = 8.dp))
+                    Text(text = c.fullName, Modifier.padding(end = 8.dp))
                 }
                 FlowRow(crossAxisSpacing = 4.dp, mainAxisSpacing = 4.dp) {
                     c.specialist.forEach { item ->
@@ -952,7 +959,11 @@ fun HomeTabPreview() {
     val mainViewModel: MainViewModel = viewModel()
     BaikanAndroidTheme {
         Surface {
-            HomeTab(goToCounseling = {}, toggleDrawer = toggleDrawer, mainViewModel.counselorList)
+            HomeTab(
+                goToCounseling = {},
+                toggleDrawer = toggleDrawer,
+                mainViewModel.counselorList,
+                goToCounselorDetail = {})
         }
     }
 }

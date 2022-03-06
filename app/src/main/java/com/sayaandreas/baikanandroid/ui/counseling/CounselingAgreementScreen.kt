@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +45,7 @@ fun CounselingAgreementScreen(navController: NavHostController) {
         })
         Column(
             Modifier
+                .weight(1f)
                 .padding(start = 16.dp, end = 16.dp)
                 .verticalScroll(
                     rememberScrollState()
@@ -106,6 +109,7 @@ fun CounselingAgreementScreen(navController: NavHostController) {
             }
             Row(
                 Modifier
+                    .clip(shape = RoundedCornerShape(16.dp))
                     .fillMaxWidth()
                     .background(color = Color(255, 232, 169))
                     .border(
@@ -122,13 +126,18 @@ fun CounselingAgreementScreen(navController: NavHostController) {
                 )
                 Text(text = "Jika kamu sedang melakukan tindakan pada poin bertanda bintang di atas, sebaiknya kamu segera menghubungi 119 ext. 8 untuk dapat pertolongan darurat.")
             }
-            Row(Modifier.padding(vertical = 24.dp)) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.large,
-                    onClick = { navController.navigate(BaikanScreen.OrderDetail.route) }) {
-                    Text(text = "Selanjutnya")
-                }
+        }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(24.dp)) {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
+                onClick = { navController.navigate(BaikanScreen.OrderDetail.route) },
+                enabled = checkedState.value == true
+            ) {
+                Text(text = "Selanjutnya")
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.sayaandreas.baikanandroid.ui.onboarding
+package com.sayaandreas.baikanandroid.ui.onboarding.register
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -23,7 +23,7 @@ import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.model.User
 import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.ui.main.MainViewModel
-import com.sayaandreas.baikanandroid.ui.onboarding.register.RegisterViewModel
+import com.sayaandreas.baikanandroid.ui.onboarding.GoogleAuthDialog
 
 @Composable
 fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewModel) {
@@ -48,14 +48,14 @@ fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewMode
     val enableRegisterButton =
         name.isNotBlank() && email.isNotBlank() && password.isNotBlank()
 
-    if (isLoading && user != null && mainViewModel.user.value == null) {
+    if (isLoading && user != null && mainViewModel.currentUser.value == null) {
         user?.let {
             mainViewModel.setCurrentUser(it)
             registerViewModel.doneLoading()
         }
     }
 
-    if (!isLoading && !showGoogleAuth && !isRegistered && mainViewModel.user.value != null) {
+    if (!isLoading && !showGoogleAuth && !isRegistered && mainViewModel.currentUser.value != null) {
         navController.navigate(BaikanScreen.RegisterGender.route) {
             popUpTo(BaikanScreen.Register.route) {
                 inclusive = true

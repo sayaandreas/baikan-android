@@ -29,9 +29,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.model.Counselor
 import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -39,6 +41,7 @@ data class Topic(val title: String, val icon: Int)
 
 @Composable
 fun TopicsTab(
+    mainViewModel: MainViewModel,
     navController: NavHostController,
     quick: Boolean = false,
     counselorList: List<Counselor>
@@ -93,6 +96,7 @@ fun TopicsTab(
             SelectCounselorDialog(
                 onDismissRequest = { setShowDialog(false) },
                 onSuccess = {
+                    mainViewModel.selectCounselor(it)
                     setShowDialog(false)
                     navController.navigate(BaikanScreen.CallCounselor.route) {
                         popUpTo(BaikanScreen.Home.route) {
@@ -163,7 +167,7 @@ fun CounselingTopics(
 @Composable
 fun SelectCounselorDialog(
     onDismissRequest: () -> Unit,
-    onSuccess: () -> Unit,
+    onSuccess: (c: Counselor) -> Unit,
     counselorList: List<Counselor>
 ) {
     val (isLoading, setIsLoading) = remember { mutableStateOf(true) }
@@ -219,12 +223,12 @@ fun SelectCounselorDialog(
                     Text(text = "Pilih Konselor", style = MaterialTheme.typography.subtitle1)
                 }
                 Divider(Modifier.padding(top = 24.dp, bottom = 8.dp))
-                counselorList.forEach {
+                counselorList.take(3).forEach {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                onSuccess()
+                                onSuccess(it)
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = SpaceBetween,
@@ -233,13 +237,13 @@ fun SelectCounselorDialog(
                             Modifier.weight(1f),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Image(
-                                painter = painterResource(id = it.image),
-                                contentDescription = "",
+                            AsyncImage(
+                                model = it.image,
+                                contentDescription = null,
                                 modifier = Modifier
+                                    .padding(end = 8.dp)
                                     .size(50.dp)
                                     .clip(shape = CircleShape)
-                                    .padding(end = 8.dp),
                             )
                             Column() {
                                 Text(text = it.name)

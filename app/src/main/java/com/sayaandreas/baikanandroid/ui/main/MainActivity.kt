@@ -1,10 +1,13 @@
 package com.sayaandreas.baikanandroid.ui.main
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.sayaandreas.baikanandroid.model.User
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 
 
@@ -24,7 +27,9 @@ class MainActivity : ComponentActivity() {
                 }.start()
         }
 
-        val mainViewModel: MainViewModel by viewModels()
+        val sharedPref: SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
+
+        val mainViewModel = MainViewModel(sharedPref)
         setContent {
             BaikanAndroidTheme {
                 Baikan(mainViewModel)

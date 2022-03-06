@@ -7,23 +7,38 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.sayaandreas.baikanandroid.R
+import com.sayaandreas.baikanandroid.model.Counselor
+import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
+import com.sayaandreas.baikanandroid.ui.main.MainViewModel
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import com.sayaandreas.baikanandroid.ui.theme.topAppBarLarge
 
 @Composable
-fun ProfileTab() {
-    Box {
+fun ProfileTab(navController: NavController, mainViewModel: MainViewModel) {
+    val tabs = listOf("Konseling", "Langganan", "Statistik")
+    val (selectedTab, setSelectedTab) = remember { mutableStateOf("Konseling") }
+
+    Column(Modifier.fillMaxSize()) {
         TopAppBar(
             modifier = Modifier
                 .zIndex(10f)
@@ -46,7 +61,7 @@ fun ProfileTab() {
 
                     )
                     Text(
-                        text = "Halo, Johny Pramono",
+                        text = mainViewModel.currentUser.value?.name ?: "Guest",
                         style = MaterialTheme.typography.h6,
                         modifier = Modifier.padding(top = 8.dp)
                     )
@@ -54,60 +69,161 @@ fun ProfileTab() {
             },
             contentColor = MaterialTheme.colors.onPrimary
         )
+        Row(
+            Modifier
+                .padding(top = 24.dp)
+                .height(56.dp)
+        ) {
+            tabs.forEach {
+                val selected = selectedTab == it
+                val color = if (selected) MaterialTheme.colors.primary else Color.LightGray
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .drawBehind {
+                            val strokeWidth = 2 * density
+                            val y = size.height - strokeWidth / 2
+                            drawLine(
+                                color = color,
+                                start = Offset(0f, y),
+                                end = Offset(size.width, y),
+                                strokeWidth = strokeWidth
+                            )
+                        }
+                        .clickable {
+                            setSelectedTab(it)
+                        },
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = it, color = color)
+                }
+            }
+        }
         Column(
             Modifier
                 .fillMaxSize()
                 .background(color = Color.White)
                 .verticalScroll(rememberScrollState())
-                .padding(top = 196.dp, bottom = 16.dp)
+                .padding(top = 16.dp, bottom = 16.dp)
         ) {
-            SubscriptionButton()
-            Stats()
-            MindfulnessStats()
-            Trophies()
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 32.dp, horizontal = 16.dp)
-            ) {
-                OutlinedButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.large,
-                    border = BorderStroke(1.dp, color = MaterialTheme.colors.primary)
-                ) {
-                    Text(text = "Logout")
-                }
+            when (selectedTab) {
+                "Konseling" -> CounselingTab(counselor = Counselor.getAll().first(), logout = {
+                    mainViewModel.logoutUser()
+                    navController.navigate(BaikanScreen.Login.route) {
+                        popUpTo(BaikanScreen.Login.route) {
+                            inclusive = true
+                        }
+                    }
+                })
+                "Langganan" -> LanggananTab()
+                "Statistik" -> StatisticTab()
             }
         }
     }
 }
 
 @Composable
-fun SubscriptionButton() {
-    Card(
-        modifier = Modifier
+fun CounselingTab(counselor: Counselor, logout: () -> Unit) {
+    val specialist = counselor.specialist.joinToString(separator = ", ", transform = {
+        it.title
+    })
+    Column(
+        Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
     ) {
-        Row(
-            Modifier
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Text(
+            text = "Jadwal Konseling Terbaru",
+            style = MaterialTheme.typography.h6,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(), elevation = 4.dp
         ) {
-            Row {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_folder_open_24),
-                    contentDescription = null,
-                    tint = MaterialTheme.colors.primary
-                )
-                Text(text = "Langganan Saya", Modifier.padding(start = 8.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)
+            ) {
+                Column(
+                    Modifier
+                        .padding(end = 16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AsyncImage(
+                        model = counselor.image,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(shape = CircleShape),
+                    )
+                }
+                Column() {
+                    Text(
+                        text = counselor.fullName,
+                        style = MaterialTheme.typography.subtitle1,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    Text(
+                        text = "1 sesi konseling",
+                        color = Color.DarkGray,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_calendar_today_24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.secondary
+                        )
+                        Text(text = "Rabu, 09 Maret 2022")
+                    }
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_access_time_24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.secondary
+                        )
+                        Text(text = "18.00 - 19.00 WIB")
+                    }
+                }
             }
-            Icon(Icons.Filled.ArrowForward, contentDescription = null)
+
         }
     }
+}
+
+@Composable
+fun LanggananTab() {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 32.dp, start = 24.dp, end = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.undraw_no_data_re_kwbl),
+            contentDescription = null,
+            modifier = Modifier
+                .size(100.dp)
+                .padding(bottom = 16.dp), tint = MaterialTheme.colors.primary
+        )
+        Text(text = "Kamu belum punya paket langganan", style = MaterialTheme.typography.h6)
+    }
+}
+
+@Composable
+fun StatisticTab() {
+    Stats()
+    MindfulnessStats()
+    Trophies()
 }
 
 @Composable
@@ -117,12 +233,13 @@ fun Stats() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
-            .padding(16.dp)
+            .padding(16.dp),
+        elevation = 4.dp
     ) {
         Row(
             Modifier
-                .padding(16.dp),
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
         ) {
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Streak Harian")
@@ -138,7 +255,7 @@ fun Stats() {
                             .size(60.dp)
 
                     )
-                    Text(text = "0", style = MaterialTheme.typography.h4)
+                    Text(text = "0/3", style = MaterialTheme.typography.h4)
                 }
             }
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -261,7 +378,8 @@ fun Trophies() {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            elevation = 4.dp
         ) {
             Row(
                 Modifier
@@ -276,7 +394,8 @@ fun Trophies() {
                         modifier = Modifier
                             .size(85.dp)
                     )
-                    Text(text = "Pemula Pemberani", textAlign = TextAlign.Center)
+                    Text(text = "Pemula", textAlign = TextAlign.Center)
+                    Text(text = "Pemberani", textAlign = TextAlign.Center)
                 }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
@@ -285,7 +404,8 @@ fun Trophies() {
                         modifier = Modifier
                             .size(85.dp)
                     )
-                    Text(text = "Petualang Gigih", maxLines = 2, textAlign = TextAlign.Center)
+                    Text(text = "Petualang", maxLines = 2, textAlign = TextAlign.Center)
+                    Text(text = "Gigih", maxLines = 2, textAlign = TextAlign.Center)
                 }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
@@ -294,7 +414,8 @@ fun Trophies() {
                         modifier = Modifier
                             .size(85.dp)
                     )
-                    Text(text = "Penguasa Lahan", maxLines = 2, textAlign = TextAlign.Center)
+                    Text(text = "Penguasa", maxLines = 2, textAlign = TextAlign.Center)
+                    Text(text = "Lahan", maxLines = 2, textAlign = TextAlign.Center)
                 }
             }
         }
@@ -306,9 +427,11 @@ fun Trophies() {
 )
 @Composable
 fun ProfileScreenScreenPreview() {
+    val navController = rememberNavController()
+    val mainViewModel = MainViewModel(null)
     BaikanAndroidTheme {
         Surface {
-            ProfileTab()
+            ProfileTab(navController, mainViewModel)
         }
     }
 }
