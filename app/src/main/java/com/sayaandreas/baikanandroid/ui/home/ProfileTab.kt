@@ -132,12 +132,12 @@ fun CounselingTab(counselor: Counselor, logout: () -> Unit) {
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 10.dp)
     ) {
         Text(
             text = "Jadwal Konseling Terbaru",
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier.padding(bottom = 16.dp)
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.padding(bottom = 10.dp)
         )
         Card(
             modifier = Modifier

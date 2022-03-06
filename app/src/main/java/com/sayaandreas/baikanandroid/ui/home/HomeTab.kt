@@ -1,6 +1,5 @@
 package com.sayaandreas.baikanandroid.ui.home
 
-import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -74,7 +73,7 @@ fun HomeTab(
         TopAppBar(
             modifier = Modifier
                 .zIndex(10f)
-                .height(170.dp)
+                .height(160.dp)
                 .clip(MaterialTheme.shapes.topAppBarLarge),
 
             content = {
@@ -87,7 +86,7 @@ fun HomeTab(
                     Column(Modifier.padding(start = 14.dp, end = 14.dp, top = 16.dp)) {
                         Text(
                             text = "Halo, $username",
-                            style = MaterialTheme.typography.h4,
+                            style = MaterialTheme.typography.h5,
                             color = Color.White
                         )
                         Text(text = "You will be fine, even finer", color = Color.White)
@@ -316,7 +315,7 @@ fun CounselorList(list: List<Counselor>, goToDetail: (c: Counselor) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(text = "Konselor Pilihan", style = MaterialTheme.typography.subtitle1)
-        list.forEach { item ->
+        list.take(3).forEach { item ->
             CounselorRow(item, selectCounselor = goToDetail)
         }
     }

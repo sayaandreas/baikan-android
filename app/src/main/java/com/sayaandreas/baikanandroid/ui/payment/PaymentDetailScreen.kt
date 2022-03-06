@@ -3,7 +3,9 @@ package com.sayaandreas.baikanandroid.ui.payment
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -38,7 +40,12 @@ fun PaymentDetailScreen(navController: NavHostController) {
                 Icon(Icons.Default.ArrowBack, contentDescription = null)
             }
         })
-        Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp)) {
+        Column(
+            Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(start = 16.dp, end = 16.dp, top = 24.dp)
+        ) {
             Column(
                 Modifier
                     .clip(shape = RoundedCornerShape(8.dp))
@@ -74,15 +81,15 @@ fun PaymentDetailScreen(navController: NavHostController) {
             )
             Spacer(Modifier.height(16.dp))
             Text(text = "Salin jumlah", textDecoration = TextDecoration.Underline)
-            Row(Modifier.padding(top = 52.dp)) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.large,
-                    onClick = {
-                        navController.navigate(BaikanScreen.PaymentSuccess.route)
-                    }) {
-                    Text(text = "Konfirmasi Pembayaran")
-                }
+        }
+        Row(Modifier.padding(24.dp)) {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
+                onClick = {
+                    navController.navigate(BaikanScreen.PaymentSuccess.route)
+                }) {
+                Text(text = "Konfirmasi Pembayaran")
             }
         }
     }

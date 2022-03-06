@@ -3,8 +3,10 @@ package com.sayaandreas.baikanandroid.ui.counseling
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -62,8 +64,7 @@ fun ChoosePackageScreen(navController: NavHostController) {
         ) {
             Row(
                 Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 packageTypes.forEach {
@@ -83,29 +84,31 @@ fun ChoosePackageScreen(navController: NavHostController) {
                     }
                 }
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Icon(Icons.Default.Info, contentDescription = null)
-                Text(
-                    text = "Durasi konseling $selectedTab per sesi = 60 menit",
-                    modifier = Modifier.padding(start = 4.dp)
-                )
-            }
-            Column(
-                Modifier.padding(top = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                when (selectedTab) {
-                    PackageType.Text.name -> {
-                        PackageTab(selectedPackage, setSelectedPackage, textPackages)
-                    }
-                    PackageType.VoiceCall.name -> {
-                        PackageTab(selectedPackage, setSelectedPackage, voicePackages)
-                    }
-                    PackageType.VideoCall.name -> {
-                        PackageTab(selectedPackage, setSelectedPackage, videoPackages)
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Icon(Icons.Default.Info, contentDescription = null)
+                    Text(
+                        text = "Durasi konseling $selectedTab per sesi = 60 menit",
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                }
+                Column(
+                    Modifier.padding(top = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    when (selectedTab) {
+                        PackageType.Text.name -> {
+                            PackageTab(selectedPackage, setSelectedPackage, textPackages)
+                        }
+                        PackageType.VoiceCall.name -> {
+                            PackageTab(selectedPackage, setSelectedPackage, voicePackages)
+                        }
+                        PackageType.VideoCall.name -> {
+                            PackageTab(selectedPackage, setSelectedPackage, videoPackages)
+                        }
                     }
                 }
             }

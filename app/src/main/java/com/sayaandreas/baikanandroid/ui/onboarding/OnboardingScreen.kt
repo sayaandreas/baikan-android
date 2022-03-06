@@ -146,8 +146,8 @@ fun OnboardingScreen(navController: NavHostController) {
             .fillMaxSize()
             .background(color = MaterialTheme.colors.primaryVariant)
     ) {
-        Column(Modifier.padding(start = 24.dp, end = 24.dp)) {
-            Column {
+        Column(Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp)) {
+            Column(Modifier.weight(1f)) {
                 HorizontalPager(
                     count = slideList.size,
                     state = pagerState,
@@ -156,13 +156,13 @@ fun OnboardingScreen(navController: NavHostController) {
                     // Add some horizontal spacing between items
                     itemSpacing = 16.dp,
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .weight(1f),
                     verticalAlignment = Alignment.Top,
                 ) { page ->
                     PagerSampleItem(
                         data = slideList[page],
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth().weight(1f),
                         description = {
                             when (page) {
                                 0 -> {
@@ -185,58 +185,57 @@ fun OnboardingScreen(navController: NavHostController) {
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 16.dp)
                 )
+            }
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Button(
+                    onClick = {
+                        navController.navigate(BaikanScreen.Register.route) {
+                            popUpTo(BaikanScreen.Onboarding.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    shape = CircleShape,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Daftar dulu, yuk!")
+                }
 
-                Column(
+                Button(
+                    onClick = {
+                        navController.navigate(BaikanScreen.Home.route) {
+                            popUpTo(BaikanScreen.Onboarding.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    shape = CircleShape,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(text = "Telusuri")
+                }
+
+                Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(top = 48.dp)
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(
-                        onClick = {
-                            navController.navigate(BaikanScreen.Register.route) {
-                                popUpTo(BaikanScreen.Onboarding.route) {
-                                    inclusive = true
-                                }
-                            }
-                        },
-                        shape = CircleShape,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Daftar dulu, yuk!")
-                    }
-
-                    Button(
-                        onClick = {
-                            navController.navigate(BaikanScreen.Home.route) {
-                                popUpTo(BaikanScreen.Onboarding.route) {
-                                    inclusive = true
-                                }
-                            }
-                        },
-                        shape = CircleShape,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text(text = "Telusuri")
-                    }
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Sudah punya akun? ")
-                        Text(
-                            text = "Masuk", modifier = Modifier
-                                .clickable {
-                                    navController.navigate(BaikanScreen.Login.route) {
-                                        popUpTo(BaikanScreen.Onboarding.route) {
-                                            inclusive = true
-                                        }
+                    Text(text = "Sudah punya akun? ")
+                    Text(
+                        text = "Masuk", modifier = Modifier
+                            .clickable {
+                                navController.navigate(BaikanScreen.Login.route) {
+                                    popUpTo(BaikanScreen.Onboarding.route) {
+                                        inclusive = true
                                     }
-                                }, color = MaterialTheme.colors.primary
-                        )
-                    }
+                                }
+                            }, color = MaterialTheme.colors.primary
+                    )
                 }
             }
         }
@@ -250,10 +249,10 @@ internal fun PagerSampleItem(
     description: @Composable () -> Unit
 ) {
     val image: Painter = painterResource(id = data.resId)
-    Column(modifier.height(520.dp)) {
+    Column(modifier.fillMaxSize()) {
         Row(
             Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth().weight(1f),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -262,8 +261,8 @@ internal fun PagerSampleItem(
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
                 modifier = Modifier
-                    .height(400.dp)
-                    .aspectRatio(2 / 3f)
+                    .fillMaxSize()
+                    .aspectRatio(4 / 5f)
             )
         }
         Text(
@@ -273,7 +272,7 @@ internal fun PagerSampleItem(
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 4.dp),
+                .padding(bottom = 4.dp, top = 16.dp),
             textAlign = TextAlign.Center
         )
         description()
