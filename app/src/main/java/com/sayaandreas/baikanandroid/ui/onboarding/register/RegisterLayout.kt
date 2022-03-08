@@ -1,8 +1,11 @@
 package com.sayaandreas.baikanandroid.ui.onboarding.register
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -29,13 +32,15 @@ fun RegisterLayout(
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.height(400.dp),
+                modifier = Modifier.aspectRatio(5/4f),
                 content = {
                     Box(modifier = Modifier.fillMaxSize()) {
                         Image(
                             painter = painterResource(id = imageRes),
                             contentDescription = null,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .aspectRatio(1f)
                         )
                         Row(
                             Modifier
@@ -58,7 +63,7 @@ fun RegisterLayout(
                         }
                     }
                 },
-                backgroundColor = MaterialTheme.colors.primaryVariant,
+                backgroundColor = Color.White,
                 elevation = 0.dp,
                 contentColor = Color.Black
             )
@@ -68,17 +73,24 @@ fun RegisterLayout(
             Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(top = 24.dp, start = 24.dp, end = 24.dp)
         ) {
-            Text(text = title, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Row(
+            Column(
                 Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
             ) {
-                content()
+                Text(text = title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(top = 24.dp),
+                ) {
+                    content()
+                }
             }
-            Row(Modifier.padding(top = 48.dp)) {
+            Row(Modifier.padding(start = 24.dp, end = 24.dp, bottom = 24.dp)) {
                 Button(
                     onClick = { onNextPressed() },
                     Modifier.fillMaxWidth(),

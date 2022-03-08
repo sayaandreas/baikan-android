@@ -1,5 +1,6 @@
 package com.sayaandreas.baikanandroid.ui.onboarding.register
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -41,7 +42,7 @@ fun RegisterGenderScreen(navController: NavHostController) {
     ) {
         Row(
             Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                 GenderButton(
@@ -64,7 +65,8 @@ fun GenderButton(title: String, selected: Boolean, icon: Int, onClick: (g: Strin
     OutlinedButton(
         onClick = { onClick(title) },
         modifier = Modifier
-            .size(148.dp),
+            .width(120.dp)
+            .height(140.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.White,
         ),
@@ -74,12 +76,13 @@ fun GenderButton(title: String, selected: Boolean, icon: Int, onClick: (g: Strin
     ) {
         Column(
             Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Box(
                 modifier = Modifier
-                    .size(90.dp)
+                    .padding(bottom = 8.dp)
+                    .size(64.dp)
                     .clip(CircleShape)
                     .border(
                         2.dp,
@@ -91,14 +94,14 @@ fun GenderButton(title: String, selected: Boolean, icon: Int, onClick: (g: Strin
                     painter = painterResource(id = icon),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(60.dp)
+                        .size(32.dp)
                         .align(Alignment.Center),
                     tint = if (selected) MaterialTheme.colors.primary else Color.Black
                 )
             }
             Text(
                 text = title,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 color = if (selected) MaterialTheme.colors.primary else Color.Black
             )
         }

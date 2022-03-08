@@ -83,7 +83,7 @@ fun TopicIntroScreen(navController: NavHostController) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(24.dp)
+                .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
         ) {
             Button(
                 modifier = Modifier.fillMaxWidth(),

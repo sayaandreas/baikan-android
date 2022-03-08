@@ -121,6 +121,7 @@ fun ChooseServiceScreen(navController: NavHostController) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(bottom = 24.dp)
                         .border(
                             width = 1.dp,
                             color = if (selectedService === "2") MaterialTheme.colors.primary else Color.Gray,
@@ -143,7 +144,7 @@ fun ChooseServiceScreen(navController: NavHostController) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(24.dp)
+                .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
         ) {
             Button(
                 modifier = Modifier.fillMaxWidth(),

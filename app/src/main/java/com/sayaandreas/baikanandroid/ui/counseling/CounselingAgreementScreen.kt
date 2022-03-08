@@ -111,6 +111,7 @@ fun CounselingAgreementScreen(navController: NavHostController) {
                 Modifier
                     .clip(shape = RoundedCornerShape(16.dp))
                     .fillMaxWidth()
+                    .padding(bottom = 24.dp)
                     .background(color = Color(255, 232, 169))
                     .border(
                         width = 1.dp,
@@ -130,7 +131,7 @@ fun CounselingAgreementScreen(navController: NavHostController) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(24.dp)) {
+                .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)) {
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,

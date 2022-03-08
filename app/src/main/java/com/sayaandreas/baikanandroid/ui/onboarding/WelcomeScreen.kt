@@ -3,7 +3,9 @@ package com.sayaandreas.baikanandroid.ui.onboarding
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,30 +31,38 @@ fun WelcomeScreen(navController: NavHostController) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colors.primaryVariant)
-                .padding(start = 24.dp, end = 24.dp, top = 24.dp)
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
         ) {
-            Image(painter = image, contentDescription = null)
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colors.primaryVariant)
+                    .padding(start = 24.dp, end = 24.dp, top = 24.dp)
+            ) {
+                Image(painter = image, contentDescription = null)
+            }
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 24.dp)
+            ) {
+                Text(text = "Halo Johny Pramono", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Selamat datang di", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "BAIK-AN",
+                    style = MaterialTheme.typography.h4,
+                    color = MaterialTheme.colors.primary
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(text = "Semoga dengan bergabungnya kamu bersama kami, bisa bikin harimu lebih baik dengan memberikan solusi yang terbaik sesuai kebutuhanmu! \uD83D\uDE0A")
+            }
         }
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, top = 24.dp)
-        ) {
-            Text(text = "Halo Johny Pramono", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-            Text(text = "Selamat datang di", style = MaterialTheme.typography.h4)
-            Text(
-                text = "BAIK-AN",
-                style = MaterialTheme.typography.h4,
-                color = MaterialTheme.colors.primary
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(text = "Semoga dengan bergabungnya kamu bersama kami, bisa bikin harimu lebih baik dengan memberikan solusi yang terbaik sesuai kebutuhanmu! \uD83D\uDE0A")
-        }
+
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(top = 48.dp, start = 24.dp, end = 24.dp)
+                .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
         ) {
             Button(
                 onClick = {

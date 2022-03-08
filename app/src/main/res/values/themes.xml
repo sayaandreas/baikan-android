@@ -12,11 +12,13 @@
         // Use windowSplashScreenAnimatedIcon to add either a drawable or an
         // animated drawable. One of these is required.
         <item name="android:statusBarColor">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/baikan_logo</item>
-        <item name="windowSplashScreenAnimationDuration">200</item>  # Required for
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenAnimationDuration">200</item>
+        # Required for
         # animated icons
 
         // Set the theme of the Activity that directly follows your splash screen.
-        <item name="postSplashScreenTheme">@style/Theme.BaikanAndroid</item>  # Required.
+        <item name="postSplashScreenTheme">@style/Theme.BaikanAndroid</item>
+        # Required.
     </style>
 </resources>

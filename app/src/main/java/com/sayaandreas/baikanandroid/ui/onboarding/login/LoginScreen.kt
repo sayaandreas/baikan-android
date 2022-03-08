@@ -69,8 +69,9 @@ fun LoginScreen(navController: NavHostController, mainViewModel: MainViewModel) 
             Text(text = "Masuk akun dulu, yuk!", style = MaterialTheme.typography.h5)
 
             OutlinedTextField(
+                singleLine = true,
                 value = email,
-                placeholder = { Text(text = "Email") },
+                placeholder = { Text(text = "Email", style = MaterialTheme.typography.body2) },
                 onValueChange = {
                     loginViewModel.setEmail(it)
                     if (it.isBlank()) loginViewModel.setEmailError(true) else loginViewModel.setEmailError(
@@ -99,8 +100,9 @@ fun LoginScreen(navController: NavHostController, mainViewModel: MainViewModel) 
                 )
             }
             OutlinedTextField(
+                singleLine = true,
                 value = password,
-                placeholder = { Text(text = "Kata sandi") },
+                placeholder = { Text(text = "Kata sandi", style = MaterialTheme.typography.body2) },
                 onValueChange = {
                     loginViewModel.setPassword(it)
                     if (it.isBlank()) loginViewModel.setPasswordError(true) else loginViewModel.setPasswordError(
@@ -144,7 +146,10 @@ fun LoginScreen(navController: NavHostController, mainViewModel: MainViewModel) 
 
                     ) {
                     if (isLoading && !showGoogleAuth) {
-                        CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Color.White)
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            color = Color.White
+                        )
                     } else {
                         Text(text = "Login")
                     }

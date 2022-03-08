@@ -168,7 +168,11 @@ fun Waiting(doneWaiting: () -> Unit) {
                 .padding(24.dp)
 
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.size(90.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(text = "${currentTime / 1000}")
                 Text(text = "Detik")
             }

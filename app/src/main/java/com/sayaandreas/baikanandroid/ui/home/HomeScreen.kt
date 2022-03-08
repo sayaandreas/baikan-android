@@ -36,7 +36,7 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
     val scaffoldState = rememberScaffoldState()
     val (selectedTab, setSelectedTab) = rememberSaveable { mutableStateOf(NavHomeTab.HOME.title) }
     val (showDialog, setShowDialog) = rememberSaveable { mutableStateOf(false) }
-    val (quick, setQuick) = rememberSaveable { mutableStateOf(false) }
+    val (showLoginDialog, setShowLoginDialog) = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val toggleDrawer = {
         scope.launch {
@@ -50,7 +50,7 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
         drawerContent = {
             DrawerContent(navController = navController, logoutUser = {
                 mainViewModel.logoutUser()
-            })
+            }, isLoggedIn = mainViewModel.currentUser.value != null)
         },
         drawerShape = RectangleShape,
         floatingActionButton = {
@@ -58,7 +58,9 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
                 contentColor = Color.White,
                 backgroundColor = MaterialTheme.colors.primary,
                 onClick = {
-                    setShowDialog(true)
+                    if (mainViewModel.currentUser.value != null) setShowDialog(true) else setShowLoginDialog(
+                        true
+                    )
                 }
             ) {
                 Icon(
@@ -74,7 +76,11 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
         bottomBar = {
             HomeBottomNavBar(
                 selectedTab = selectedTab,
-                onTabChange = setSelectedTab
+                onTabChange = {
+                    if (mainViewModel.currentUser.value != null) setSelectedTab(it) else setShowLoginDialog(
+                        true
+                    )
+                }
             )
         }
     ) { innerPadding ->
@@ -91,7 +97,8 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
                     goToCounselorDetail = { c: Counselor ->
                         mainViewModel.selectCounselor(c)
                         navController.navigate(BaikanScreen.CounselorDetail.route)
-                    }
+                    },
+                    setShowLoginDialog = setShowLoginDialog
                 )
                 NavHomeTab.TOPICS.title -> TopicsTab(
                     mainViewModel,
@@ -115,17 +122,39 @@ fun HomeScreen(navController: NavHostController, mainViewModel: MainViewModel) {
                     setSelectedTab(NavHomeTab.TOPICS.title)
                 })
         }
+
+        if (showLoginDialog) {
+            AlertDialog(
+                onDismissRequest = { setShowLoginDialog(false) },
+                title = { Text(text = "Mohon Maaf") },
+                text = { Text(text = "Kamu harus login terlebih dahulu untuk dapat menggunakan fitur ini") },
+                confirmButton = {
+                    Button(onClick = { navController.navigate(BaikanScreen.Login.route) }) {
+                        Text(text = "Lanjut login")
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(onClick = { setShowLoginDialog(false) }) {
+                        Text(text = "Batal")
+                    }
+                },
+                properties = DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true
+                )
+            )
+        }
     }
 }
 
 @Composable
 fun HomeBottomNavBar(
     selectedTab: String,
-    onTabChange: (tab: String) -> Unit
+    onTabChange: (tab: String) -> Unit,
 ) {
     val tabs = NavHomeTab.values()
     BottomAppBar(
-        cutoutShape = MaterialTheme.shapes.fab
+        cutoutShape = MaterialTheme.shapes.fab,
     ) {
         tabs.forEach { tab ->
             BottomNavigationItem(
@@ -137,8 +166,9 @@ fun HomeBottomNavBar(
                         contentDescription = null,
                     )
                 },
+                label = { Text(text = tab.title, fontSize = 10.sp) },
             )
-            if (tab.title == "Counseling") {
+            if (tab.title == "Konseling") {
                 Spacer(Modifier.weight(1f, true))
             }
         }
@@ -146,7 +176,7 @@ fun HomeBottomNavBar(
 }
 
 @Composable
-fun DrawerContent(navController: NavHostController, logoutUser: () -> Unit) {
+fun DrawerContent(navController: NavHostController, logoutUser: () -> Unit, isLoggedIn: Boolean) {
     val menuList = listOf(
         "Home" to R.drawable.ic_home_outline,
         "Riwayat" to R.drawable.ic_time_outline,
@@ -189,20 +219,22 @@ fun DrawerContent(navController: NavHostController, logoutUser: () -> Unit) {
                 }
             }
         }
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(24.dp), horizontalArrangement = Arrangement.Center
-        ) {
-            OutlinedButton(onClick = {
-                navController.navigate(BaikanScreen.Login.route) {
-                    popUpTo(BaikanScreen.Login.route) {
-                        inclusive = true
+        if (isLoggedIn) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp), horizontalArrangement = Arrangement.Center
+            ) {
+                OutlinedButton(onClick = {
+                    navController.navigate(BaikanScreen.Login.route) {
+                        popUpTo(BaikanScreen.Login.route) {
+                            inclusive = true
+                        }
                     }
+                    logoutUser()
+                }) {
+                    Text(text = "Logout")
                 }
-                logoutUser()
-            }) {
-                Text(text = "Logout")
             }
         }
     }
@@ -266,9 +298,9 @@ enum class NavHomeTab(
 ) {
     HOME("Home", R.drawable.ic_baseline_home_24),
     TOPICS(
-        "Counseling",
+        "Konseling",
         R.drawable.ic_baseline_chat_bubble_24
     ),
-    PROFILE("Profile", R.drawable.ic_baseline_account_circle_24),
-    NOTIFICATIONS("Notifications", R.drawable.ic_baseline_notifications_24);
+    PROFILE("Profil", R.drawable.ic_baseline_account_circle_24),
+    NOTIFICATIONS("Notifikasi", R.drawable.ic_baseline_notifications_24);
 }

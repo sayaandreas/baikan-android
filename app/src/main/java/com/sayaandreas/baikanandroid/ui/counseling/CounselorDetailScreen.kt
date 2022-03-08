@@ -88,7 +88,7 @@ fun CounselorDetailScreen(navController: NavHostController, mainViewModel: MainV
             }
             Row(
                 Modifier
-                    .padding(24.dp),
+                    .padding(bottom = 24.dp, start = 24.dp, end = 24.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Button(
@@ -115,13 +115,13 @@ fun CounselorIntro(fullName: String, specialistText: String, patients: Int) {
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
             text = fullName,
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.subtitle1
         )
         Text(
             text = "Spesialis di $specialistText",
-            style = MaterialTheme.typography.subtitle2,
             color = Color.DarkGray,
             modifier = Modifier.padding(bottom = 16.dp),
+            fontSize = 14.sp
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -131,7 +131,7 @@ fun CounselorIntro(fullName: String, specialistText: String, patients: Int) {
             )
             Text(
                 text = "Sudah membantu +$patients klien",
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.subtitle2,
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
@@ -149,17 +149,19 @@ fun CounselorProfile(firstName: String, motto: String, description: String) {
         Text(
             text = "Profil Konselor $firstName",
             modifier = Modifier.padding(bottom = 8.dp),
-            style = MaterialTheme.typography.h5,
+            style = MaterialTheme.typography.subtitle1,
         )
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
             text = "\"$motto\"",
-            style = MaterialTheme.typography.subtitle1,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium
         )
         Text(
             text = description,
-            color = MaterialTheme.colors.onBackground
+            color = MaterialTheme.colors.onBackground,
+            fontSize = 14.sp
         )
     }
 }
@@ -170,7 +172,7 @@ fun CounselorTestimonies(list: List<Testimony>) {
     val lazyListState = rememberLazyListState()
     Text(
         text = "Cerita mereka yang sudah konseling",
-        style = MaterialTheme.typography.h5,
+        style = MaterialTheme.typography.subtitle1,
         modifier = Modifier.padding(start = 24.dp, end = 24.dp)
     )
     LazyRow(
@@ -195,14 +197,22 @@ fun CounselorTestimonies(list: List<Testimony>) {
                     buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colors.primary,
-                                fontSize = 20.sp
+                                fontSize = 16.sp
                             )
                         ) {
                             append("${item.title}\n")
                         }
-                        append(item.description)
+                        withStyle(
+                            style = SpanStyle(
+                                color = MaterialTheme.colors.primary,
+                                fontSize = 14.sp
+                            )
+                        ) {
+                            append(item.description)
+                        }
+
                     },
                     maxLines = 5,
                     modifier = Modifier.padding(bottom = 8.dp)

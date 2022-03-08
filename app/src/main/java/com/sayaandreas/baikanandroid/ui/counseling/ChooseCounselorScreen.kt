@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -68,7 +69,7 @@ fun ChooseCounselorRow(c: Counselor, onClick: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
-            .height(150.dp)
+            .height(140.dp)
             .clickable {
                 onClick()
             }
@@ -77,7 +78,7 @@ fun ChooseCounselorRow(c: Counselor, onClick: () -> Unit) {
             model = c.image,
             contentDescription = null,
             modifier = Modifier
-                .width(130.dp)
+                .width(110.dp)
                 .fillMaxHeight()
                 .clip(shape = RoundedCornerShape(16.dp)),
             contentScale = ContentScale.FillBounds
@@ -91,22 +92,22 @@ fun ChooseCounselorRow(c: Counselor, onClick: () -> Unit) {
             Column() {
                 Text(
                     text = c.fullName,
-                    style = MaterialTheme.typography.subtitle1,
-                    overflow = TextOverflow.Visible
+                    overflow = TextOverflow.Visible,
+                    style = MaterialTheme.typography.subtitle2
                 )
                 Text(
                     text = "Spesialis di $specialist",
                     color = Color.Gray,
-                    style = MaterialTheme.typography.caption
+                    fontSize = 12.sp
                 )
             }
             Column() {
                 val fmt = SimpleDateFormat("EEEE, dd LLL HH:mm", Locale("ID"))
-                Text(text = "Jadwal Tercepat", fontWeight = FontWeight.SemiBold)
+                Text(text = "Jadwal Tercepat", fontWeight = FontWeight.Medium, fontSize = 14.sp)
                 Text(
                     text = fmt.format(c.schedule.first()),
                     color = Color.Gray,
-                    style = MaterialTheme.typography.caption
+                    fontSize = 12.sp
                 )
             }
         }

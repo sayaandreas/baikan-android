@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -42,7 +43,7 @@ fun ProfileTab(navController: NavController, mainViewModel: MainViewModel) {
         TopAppBar(
             modifier = Modifier
                 .zIndex(10f)
-                .height(180.dp)
+                .height(150.dp)
                 .clip(MaterialTheme.shapes.topAppBarLarge),
 
             content = {
@@ -56,14 +57,15 @@ fun ProfileTab(navController: NavController, mainViewModel: MainViewModel) {
                         painter = image,
                         contentDescription = "",
                         modifier = Modifier
-                            .size(90.dp)
+                            .size(64.dp)
                             .clip(shape = CircleShape)
 
                     )
                     Text(
                         text = mainViewModel.currentUser.value?.name ?: "Guest",
                         style = MaterialTheme.typography.h6,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = 8.dp),
+                        color = Color.White
                     )
                 }
             },
@@ -71,8 +73,8 @@ fun ProfileTab(navController: NavController, mainViewModel: MainViewModel) {
         )
         Row(
             Modifier
-                .padding(top = 24.dp)
-                .height(56.dp)
+                .padding(top = 8.dp)
+                .height(40.dp)
         ) {
             tabs.forEach {
                 val selected = selectedTab == it
@@ -146,7 +148,7 @@ fun CounselingTab(counselor: Counselor, logout: () -> Unit) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(24.dp)
+                    .padding(16.dp)
             ) {
                 Column(
                     Modifier
@@ -158,40 +160,47 @@ fun CounselingTab(counselor: Counselor, logout: () -> Unit) {
                         model = counselor.image,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(80.dp)
+                            .size(48.dp)
                             .clip(shape = CircleShape),
                     )
                 }
                 Column() {
                     Text(
                         text = counselor.fullName,
-                        style = MaterialTheme.typography.subtitle1,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = "1 sesi konseling",
                         color = Color.DarkGray,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(bottom = 4.dp)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_baseline_calendar_today_24),
                             contentDescription = null,
-                            tint = MaterialTheme.colors.secondary
+                            tint = MaterialTheme.colors.secondary,
+                            modifier = Modifier.size(16.dp)
                         )
-                        Text(text = "Rabu, 09 Maret 2022")
+                        Text(text = "Rabu, 09 Maret 2022", fontSize = 13.sp)
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_baseline_access_time_24),
                             contentDescription = null,
-                            tint = MaterialTheme.colors.secondary
+                            tint = MaterialTheme.colors.secondary,
+                            modifier = Modifier.size(16.dp)
                         )
-                        Text(text = "18.00 - 19.00 WIB")
+                        Text(text = "18.00 - 19.00 WIB", fontSize = 13.sp)
                     }
                 }
             }
@@ -215,7 +224,11 @@ fun LanggananTab() {
                 .size(100.dp)
                 .padding(bottom = 16.dp), tint = MaterialTheme.colors.primary
         )
-        Text(text = "Kamu belum punya paket langganan", style = MaterialTheme.typography.h6)
+        Text(
+            text = "Kamu belum punya paket langganan",
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 
@@ -252,10 +265,10 @@ fun Stats() {
                         painter = imageFire,
                         contentDescription = "",
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(40.dp)
 
                     )
-                    Text(text = "0/3", style = MaterialTheme.typography.h4)
+                    Text(text = "0/3", style = MaterialTheme.typography.h6)
                 }
             }
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -269,10 +282,10 @@ fun Stats() {
                         painter = imageSpin,
                         contentDescription = "",
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(40.dp)
 
                     )
-                    Text(text = "0/3", style = MaterialTheme.typography.h4)
+                    Text(text = "0/3", style = MaterialTheme.typography.h6)
                 }
 
             }
@@ -291,7 +304,7 @@ fun MindfulnessStats() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "Mindfulness Statistik", style = MaterialTheme.typography.subtitle1)
+        Text(text = "Mindfulness Statistik", fontWeight = FontWeight.SemiBold)
         Text(
             text = "Lihat  semua",
             color = MaterialTheme.colors.primary,
@@ -319,7 +332,7 @@ fun MindfulnessStats() {
                     style = MaterialTheme.typography.h4,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                Row {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = imageHourglass,
                         contentDescription = "",
@@ -327,7 +340,7 @@ fun MindfulnessStats() {
                             .size(28.dp)
                             .padding(end = 8.dp)
                     )
-                    Text(text = "Jumlah sesi")
+                    Text(text = "Jumlah sesi", fontSize = 14.sp)
                 }
             }
         }
@@ -346,7 +359,7 @@ fun MindfulnessStats() {
                     style = MaterialTheme.typography.h4,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                Row() {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = imageTime,
                         contentDescription = "",
@@ -354,7 +367,7 @@ fun MindfulnessStats() {
                             .size(28.dp)
                             .padding(end = 8.dp)
                     )
-                    Text(text = "Menit mindful")
+                    Text(text = "Menit mindful", fontSize = 14.sp)
                 }
 
             }
@@ -372,7 +385,7 @@ fun Trophies() {
     ) {
         Text(
             text = "Berdasarkan menit",
-            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(start = 16.dp)
         )
         Card(
@@ -392,30 +405,30 @@ fun Trophies() {
                         painter = image,
                         contentDescription = "",
                         modifier = Modifier
-                            .size(85.dp)
+                            .size(64.dp)
                     )
-                    Text(text = "Pemula", textAlign = TextAlign.Center)
-                    Text(text = "Pemberani", textAlign = TextAlign.Center)
+                    Text(text = "Pemula", textAlign = TextAlign.Center, fontSize = 14.sp)
+                    Text(text = "Pemberani", textAlign = TextAlign.Center, fontSize = 14.sp)
                 }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
                         painter = image,
                         contentDescription = "",
                         modifier = Modifier
-                            .size(85.dp)
+                            .size(64.dp)
                     )
-                    Text(text = "Petualang", maxLines = 2, textAlign = TextAlign.Center)
-                    Text(text = "Gigih", maxLines = 2, textAlign = TextAlign.Center)
+                    Text(text = "Petualang", maxLines = 2, textAlign = TextAlign.Center, fontSize = 14.sp)
+                    Text(text = "Gigih", maxLines = 2, textAlign = TextAlign.Center, fontSize = 14.sp)
                 }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
                         painter = image,
                         contentDescription = "",
                         modifier = Modifier
-                            .size(85.dp)
+                            .size(64.dp)
                     )
-                    Text(text = "Penguasa", maxLines = 2, textAlign = TextAlign.Center)
-                    Text(text = "Lahan", maxLines = 2, textAlign = TextAlign.Center)
+                    Text(text = "Penguasa", maxLines = 2, textAlign = TextAlign.Center, fontSize = 14.sp)
+                    Text(text = "Lahan", maxLines = 2, textAlign = TextAlign.Center , fontSize = 14.sp)
                 }
             }
         }

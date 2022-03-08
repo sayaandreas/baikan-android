@@ -81,8 +81,9 @@ fun PaymentDetailScreen(navController: NavHostController) {
             )
             Spacer(Modifier.height(16.dp))
             Text(text = "Salin jumlah", textDecoration = TextDecoration.Underline)
+            Spacer(Modifier.height(24.dp))
         }
-        Row(Modifier.padding(24.dp)) {
+        Row(Modifier.padding(start = 24.dp, end = 24.dp, bottom = 24.dp)) {
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,

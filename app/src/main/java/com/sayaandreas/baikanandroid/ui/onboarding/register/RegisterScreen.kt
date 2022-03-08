@@ -1,9 +1,6 @@
 package com.sayaandreas.baikanandroid.ui.onboarding.register
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -69,8 +66,14 @@ fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewMode
         Modifier
             .fillMaxSize()
     ) {
-        Column(Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp)) {
-            Text(text = "Datfar akun dulu, yuk!", style = MaterialTheme.typography.h5)
+        Column(
+            Modifier
+                .padding(start = 24.dp, end = 24.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                )
+        ) {
+            Text(text = "Datfar akun dulu, yuk!", style = MaterialTheme.typography.h5, modifier = Modifier.padding(top = 24.dp))
 
             OutlinedTextField(
                 value = name,
@@ -114,7 +117,7 @@ fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewMode
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp)
+                    .padding(top = 16.dp)
                     .onFocusChanged {
                         if (it.hasFocus) {
                             registerViewModel.setEmailTouched(true)
@@ -244,6 +247,7 @@ fun RegisterScreen(navController: NavHostController, mainViewModel: MainViewMode
 
             Row(
                 Modifier
+                    .padding(bottom = 24.dp)
                     .fillMaxWidth()
                     .clip(shape = MaterialTheme.shapes.large)
                     .background(color = Color(255, 232, 169))

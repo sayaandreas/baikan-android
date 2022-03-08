@@ -1,5 +1,6 @@
 package com.sayaandreas.baikanandroid.ui.main
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,12 +20,10 @@ import com.sayaandreas.baikanandroid.ui.payment.*
 @Composable
 fun Baikan(mainViewModel: MainViewModel) {
     val navController = rememberNavController()
-    val startDest =
-        if (mainViewModel.currentUser.value != null) BaikanScreen.Home.route else BaikanScreen.Onboarding.route
 
-    NavHost(navController = navController, startDestination = startDest) {
+    NavHost(navController = navController, startDestination = BaikanScreen.Onboarding.route) {
         composable(BaikanScreen.Onboarding.route) {
-            OnboardingScreen(navController)
+            OnboardingScreen(navController, mainViewModel)
         }
         composable(BaikanScreen.Login.route) {
             LoginScreen(navController, mainViewModel)

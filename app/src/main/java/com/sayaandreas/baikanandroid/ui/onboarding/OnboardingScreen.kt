@@ -33,6 +33,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.sayaandreas.baikanandroid.ui.main.BaikanScreen
 import com.sayaandreas.baikanandroid.R
 import com.sayaandreas.baikanandroid.model.ImageDataLocal
+import com.sayaandreas.baikanandroid.ui.main.MainViewModel
 import com.sayaandreas.baikanandroid.ui.theme.BaikanAndroidTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
@@ -107,9 +108,15 @@ fun Desc3() {
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OnboardingScreen(navController: NavHostController) {
-//    val pagerState = rememberPagerState()
+fun OnboardingScreen(navController: NavHostController, mainViewModel: MainViewModel) {
 
+    if (mainViewModel.currentUser.value != null) {
+        navController.navigate(BaikanScreen.Home.route) {
+            popUpTo(BaikanScreen.Onboarding.route) {
+                inclusive = true
+            }
+        }
+    }
 
     val slideList = listOf(
         ImageDataLocal(
@@ -118,11 +125,11 @@ fun OnboardingScreen(navController: NavHostController) {
         ),
         ImageDataLocal(
             "Obat",
-            R.drawable.onboarding_3
+            R.drawable.onboarding_2
         ),
         ImageDataLocal(
             "Antibiotik",
-            R.drawable.onboarding_4
+            R.drawable.onboarding_3
         ),
     )
 
@@ -146,7 +153,10 @@ fun OnboardingScreen(navController: NavHostController) {
             .fillMaxSize()
             .background(color = MaterialTheme.colors.primaryVariant)
     ) {
-        Column(Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(start = 24.dp, end = 24.dp)) {
             Column(Modifier.weight(1f)) {
                 HorizontalPager(
                     count = slideList.size,
@@ -162,7 +172,8 @@ fun OnboardingScreen(navController: NavHostController) {
                     PagerSampleItem(
                         data = slideList[page],
                         modifier = Modifier
-                            .fillMaxWidth().weight(1f),
+                            .fillMaxWidth()
+                            .weight(1f),
                         description = {
                             when (page) {
                                 0 -> {
@@ -252,7 +263,8 @@ internal fun PagerSampleItem(
     Column(modifier.fillMaxSize()) {
         Row(
             Modifier
-                .fillMaxWidth().weight(1f),
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -286,7 +298,7 @@ fun OnboardingScreenPreview() {
     val navController = rememberNavController()
     BaikanAndroidTheme() {
         Surface() {
-            OnboardingScreen(navController)
+            OnboardingScreen(navController, MainViewModel(null))
         }
     }
 }

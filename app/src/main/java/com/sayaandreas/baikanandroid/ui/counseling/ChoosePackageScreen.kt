@@ -96,7 +96,7 @@ fun ChoosePackageScreen(navController: NavHostController) {
                     )
                 }
                 Column(
-                    Modifier.padding(top = 16.dp),
+                    Modifier.padding(top = 16.dp, bottom = 24.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     when (selectedTab) {
@@ -116,7 +116,7 @@ fun ChoosePackageScreen(navController: NavHostController) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 24.dp)
+                .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
         ) {
             Button(
                 modifier = Modifier.fillMaxWidth(),

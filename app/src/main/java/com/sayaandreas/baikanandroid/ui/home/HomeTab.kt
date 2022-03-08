@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,7 +59,8 @@ fun HomeTab(
     toggleDrawer: () -> Job,
     counselorList: List<Counselor>,
     currentUser: User? = null,
-    goToCounselorDetail: (c: Counselor) -> Unit
+    goToCounselorDetail: (c: Counselor) -> Unit,
+    setShowLoginDialog: (b: Boolean) -> Unit
 ) {
     val scrollState = rememberScrollState(0)
     val (showDialog, setShowDialog) = remember {
@@ -73,7 +75,7 @@ fun HomeTab(
         TopAppBar(
             modifier = Modifier
                 .zIndex(10f)
-                .height(160.dp)
+                .height(130.dp)
                 .clip(MaterialTheme.shapes.topAppBarLarge),
 
             content = {
@@ -83,7 +85,14 @@ fun HomeTab(
                             Icon(Icons.Filled.Menu, contentDescription = null, tint = Color.White)
                         }
                     }
-                    Column(Modifier.padding(start = 14.dp, end = 14.dp, top = 16.dp)) {
+                    Column(
+                        Modifier.padding(
+                            start = 14.dp,
+                            end = 14.dp,
+                            top = 8.dp,
+                            bottom = 8.dp
+                        )
+                    ) {
                         Text(
                             text = "Halo, $username",
                             style = MaterialTheme.typography.h5,
@@ -109,10 +118,14 @@ fun HomeTab(
         ) {
             MainMenu(showMeditation = {
                 setShowDialog(true)
-            }, goToCounseling = goToCounseling)
+            }, goToCounseling = {
+                if (currentUser != null) goToCounseling() else setShowLoginDialog(
+                    true
+                )
+            })
             BoosterMenu(setShowBoosterDialog)
             PromoBanner()
-            CounselorList(counselorList, goToDetail = goToCounselorDetail)
+            CounselorList(counselorList, goToDetail = {})
             Stories()
             CounselingStep()
             Image(
@@ -141,7 +154,7 @@ fun HomeTab(
 @Composable
 fun MainMenu(showMeditation: () -> Unit, goToCounseling: () -> Unit) {
 
-    Text(text = "Butuh bantuan apa?", style = MaterialTheme.typography.h6)
+    Text(text = "Butuh bantuan apa?", style = MaterialTheme.typography.subtitle1)
     Row(
         Modifier
             .fillMaxWidth()
@@ -172,7 +185,7 @@ fun MainMenu(showMeditation: () -> Unit, goToCounseling: () -> Unit) {
             )
             Text(
                 text = "Konseling",
-                style = MaterialTheme.typography.subtitle2,
+                fontWeight = FontWeight.SemiBold,
                 color = Color.White
             )
         }
@@ -199,8 +212,8 @@ fun MainMenu(showMeditation: () -> Unit, goToCounseling: () -> Unit) {
             )
             Text(
                 text = "Self Healing",
-                style = MaterialTheme.typography.subtitle2,
-                color = Color.White
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
@@ -227,7 +240,7 @@ fun BoosterMenu(setShowDialog: (type: BoosterDialogType) -> Unit) {
         ),
         ClickableBoosterMenu(title = "F&B", icon = R.drawable.ic_menu_food, BoosterDialogType.Fnb)
     )
-    Text(text = "Ingin mengurangi stres mu?", style = MaterialTheme.typography.h6)
+    Text(text = "Ingin mengurangi stres mu?", style = MaterialTheme.typography.subtitle1)
     Row(
         Modifier
             .fillMaxWidth()
@@ -264,7 +277,7 @@ fun BoosterMenu(setShowDialog: (type: BoosterDialogType) -> Unit) {
                 Text(
                     text = it.title,
                     modifier = Modifier.padding(top = 8.dp),
-                    style = MaterialTheme.typography.subtitle2
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
@@ -962,7 +975,7 @@ fun HomeTabPreview() {
                 goToCounseling = {},
                 toggleDrawer = toggleDrawer,
                 mainViewModel.counselorList,
-                goToCounselorDetail = {})
+                goToCounselorDetail = {}, setShowLoginDialog = {})
         }
     }
 }
